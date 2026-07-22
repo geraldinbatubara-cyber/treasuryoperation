@@ -18,7 +18,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-html_path = Path(__file__).parent / "assets" / "latihan_pelaksanaan_anggaran.html"
+html_path = Path(__file__).parent / "assets" / "treasury_operation_latihan.html"
 html_content = html_path.read_text(encoding="utf-8")
 
 st.components.v1.html(html_content, height=1000, scrolling=True)

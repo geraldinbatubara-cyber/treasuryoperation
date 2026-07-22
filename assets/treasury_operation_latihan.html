@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Latihan Asesmen — Pelaksanaan Anggaran</title>
+<title>Latihan Asesmen — Treasury Operation</title>
 <style>
   :root{
     --ink:#122C31;
@@ -77,7 +77,6 @@
     opacity:0.55;
   }
 
-  /* ---- Perforated tear edge at bottom ---- */
   .tear{
     height:14px;
     background:
@@ -85,7 +84,6 @@
     margin-top:-1px;
   }
 
-  /* ---- Setup screen ---- */
   .field-label{
     font-size:11px;
     text-transform:uppercase;
@@ -132,8 +130,8 @@
   }
   .start-btn:hover{ background:#7A5D2F; transform: translateY(-1px); }
   .start-btn:active{ transform: translateY(0); }
+  .start-btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
 
-  /* ---- Quiz header ---- */
   .quiz-top{
     display:flex;
     justify-content:space-between;
@@ -255,7 +253,6 @@
   .next-btn.show{ display:block; }
   .next-btn:hover{ background:#0A1E22; }
 
-  /* ---- Results ---- */
   .result-score{
     text-align:center;
     font-family: Georgia, serif;
@@ -397,6 +394,54 @@
     opacity:0.85;
   }
 
+  /* ---- Module select screen ---- */
+  .module-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    padding:16px 18px;
+    margin-bottom:10px;
+    border:1.5px solid var(--line);
+    border-radius:4px;
+    background: rgba(255,255,255,0.32);
+    cursor:pointer;
+    transition: border-color .12s ease, background .12s ease;
+  }
+  .module-card:hover{ border-color: var(--brass); background: rgba(255,255,255,0.55); }
+  .module-card .m-title{
+    font-family: Georgia, serif;
+    font-weight:700;
+    font-size:15.5px;
+    margin-bottom:3px;
+  }
+  .module-card .m-sub{
+    font-size:12px;
+    color: rgba(18,44,49,0.55);
+  }
+  .module-card .m-arrow{
+    font-size:18px;
+    color: var(--brass-deep);
+    flex:0 0 auto;
+  }
+  .module-card.disabled{
+    cursor:default;
+    opacity:0.5;
+  }
+  .module-card.disabled:hover{ border-color: var(--line); background: rgba(255,255,255,0.32); }
+  .module-card.disabled .m-arrow{ display:none; }
+  .badge-soon{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    font-weight:700;
+    color: rgba(18,44,49,0.45);
+    border:1px solid rgba(18,44,49,0.25);
+    border-radius:12px;
+    padding:2px 8px;
+    flex:0 0 auto;
+  }
+
   @media (max-width:480px){
     .sheet{ padding:26px 20px 22px 20px; }
     .question-text{ font-size:17px; }
@@ -408,8 +453,8 @@
 <div class="stage">
   <div class="masthead">
     <div class="eyebrow">Simulasi Asesmen Kemampuan Pegawai</div>
-    <h1>Latihan Soal · Pelaksanaan Anggaran</h1>
-    <p>Berdasarkan Modul Pelaksanaan Anggaran — Direktorat Jenderal Perbendaharaan</p>
+    <h1 id="mastheadTitle">Latihan Soal · Treasury Operation</h1>
+    <p id="mastheadSub">Berdasarkan Modul Pembelajaran — Direktorat Jenderal Perbendaharaan</p>
   </div>
 
   <div class="sheet" id="sheet"></div>
@@ -417,7 +462,7 @@
 </div>
 
 <script>
-const BANK = [
+const BANK_PELAKSANAAN_ANGGARAN = [
 {bab:"Bab 1 — Pejabat Perbendaharaan", q:"Dalam struktur tata kelola keuangan negara, Menteri/Pimpinan Lembaga berperan sebagai Pengguna Anggaran (PA) yang merepresentasikan fungsi:",
   opts:["Chief Financial Officer (CFO)","Chief Operating Officer (COO)","Kuasa Bendahara Umum Negara","Kepala Satuan Kerja"], ans:1,
   exp:"Menteri Keuangan berperan sebagai CFO (pengelola fiskal), sedangkan Menteri/Pimpinan Lembaga berperan sebagai COO yang menjadi Pengguna Anggaran (PA)."},
@@ -715,17 +760,337 @@ const BANK = [
   exp:"RO yang dihitung nilai kinerjanya adalah RO dengan status 'Terkonfirmasi' dan 'Valid'; ketiga kombinasi status lainnya menghasilkan nilai 0."}
 ];
 
+const BANK_PENGELOLAAN_KAS = [
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Sebelum era reformasi keuangan negara, fungsi perbendaharaan Indonesia berlandaskan pada:",
+  opts:["UU No. 17 Tahun 2003","Indische Comptabiliteits Wet (ICW) warisan kolonial","PMK 155/PMK.05/2023","Peraturan Pemerintah No. 39 Tahun 2007"], ans:1,
+  exp:"Sebelum tahun 2000-an, fungsi perbendaharaan berlandaskan pada ICW warisan kolonial yang hanya terbatas pada pencatatan, penerimaan, penyimpanan, dan pembayaran uang negara — bersifat administrasi kas pasif."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Peristiwa yang menjadi titik balik dan mendorong lahirnya komitmen reformasi pengelolaan keuangan negara di Indonesia adalah:",
+  opts:["Pandemi COVID-19","Krisis Keuangan Asia 1997–1998","Reformasi 1998","Krisis Keuangan Global 2008"], ans:1,
+  exp:"Krisis Keuangan Asia 1997–1998 memperlihatkan kelemahan mendasar sistem keuangan publik Indonesia, di mana pemerintah kesulitan mengetahui posisi kas secara cepat dan akurat, sehingga mendorong reformasi menyeluruh."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Tiga undang-undang utama yang menjadi fondasi perbendaharaan modern pasca krisis 1997-1998 adalah UU No. 17/2003, UU No. 1/2004, dan:",
+  opts:["UU No. 15 Tahun 2004 tentang Pemeriksaan Pengelolaan dan Tanggung Jawab Keuangan Negara","UU No. 25 Tahun 2004 tentang Sistem Perencanaan Pembangunan Nasional","UU No. 33 Tahun 2004 tentang Perimbangan Keuangan","UU No. 23 Tahun 2014 tentang Pemerintahan Daerah"], ans:0,
+  exp:"Tiga undang-undang utama: UU No. 17 Tahun 2003 tentang Keuangan Negara, UU No. 1 Tahun 2004 tentang Perbendaharaan Negara, dan UU No. 15 Tahun 2004 tentang Pemeriksaan Pengelolaan dan Tanggung Jawab Keuangan Negara."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Dalam paradigma pengelolaan kas aktif, pemerintah berperan sebagai:",
+  opts:["Kasir yang hanya mencatat transaksi","Manajer kas yang proaktif","Auditor internal","Regulator pasar modal"], ans:1,
+  exp:"Dalam sistem baru, pemerintah tidak lagi berperan sebagai kasir, melainkan sebagai manajer kas yang proaktif, mencakup perencanaan, pengendalian, dan optimalisasi arus kas."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Jalur reformasi pengelolaan kas yang berfungsi menyatukan fragmentasi ribuan rekening pemerintah ke satu rekening induk disebut:",
+  opts:["Jalur Regulasi Utama","Jalur Konsolidasi Kas","Jalur Proyeksi Kas","Jalur Optimalisasi Kas"], ans:1,
+  exp:"Jalur Konsolidasi Kas dimulai dengan penertiban rekening pemerintah tahun 2005 dan uji coba TSA tahun 2006, mengonsolidasikan ribuan rekening ke dalam satu rekening induk."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Forum koordinasi antarunit Kementerian Keuangan yang dibentuk untuk mengintegrasikan data dan analisis guna mendukung prakiraan kas disebut:",
+  opts:["ALCo Regional","Cash Planning Information Network (CPIN)","Treasury Dealing Room (TDR)","Komite Stabilitas Sistem Keuangan"], ans:1,
+  exp:"Tim Cash Planning Information Network (CPIN) merupakan forum koordinasi antarunit di Kementerian Keuangan yang mengintegrasikan data dan analisis untuk mendukung prakiraan kas."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Regulasi perencanaan kas yang mengubah total pendekatan dengan menghilangkan kewajiban Satker menyusun RPD Harian secara terpisah adalah:",
+  opts:["PMK 192/2009 (renkas G.1)","PMK 277/2014 (renkas G.2)","PMK 197/2017 (renkas G.3)","PMK 155/2023 (renkas G.4)"], ans:3,
+  exp:"PMK 155/2023 (renkas G.4) menghilangkan kewajiban Satker menyusun dan mengirim RPD Harian secara terpisah; RPD Harian kini terbentuk otomatis terintegrasi ke sistem saat PPK menyetujui SPP."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Pusat operasional penempatan dana jangka pendek pemerintah yang dibangun dalam jalur optimalisasi kas disebut:",
+  opts:["Treasury Dealing Room (TDR)","Kantor Pelayanan Perbendaharaan Negara (KPPN)","ALCo Pusat","Rekening Kas Umum Negara (RKUN)"], ans:0,
+  exp:"Reformasi jalur optimalisasi kas mencakup pembangunan Treasury Dealing Room (TDR) sebagai pusat operasional penempatan dana jangka pendek, memungkinkan pengelolaan kas aktif melalui instrumen investasi aman dan likuid."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Menurut definisi IMF (2010), Treasury Single Account (TSA) adalah:",
+  opts:["Rekening tunggal yang hanya dimiliki oleh Kementerian Keuangan","Struktur terpadu dari berbagai rekening pemerintah yang saling terhubung untuk seluruh transaksi penerimaan dan pengeluaran","Sistem pencatatan manual transaksi kas negara","Instrumen investasi jangka pendek pemerintah"], ans:1,
+  exp:"IMF (2010) mendefinisikan TSA sebagai struktur terpadu dari berbagai rekening pemerintah yang saling terhubung dan digunakan untuk seluruh transaksi penerimaan dan pengeluaran pemerintah."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Struktur TSA di mana unit pemerintah tidak memiliki rekening bank sendiri dan seluruh transaksi dilakukan melalui satu rekening induk di bank sentral disebut:",
+  opts:["TSA Terdesentralisasi","TSA Terdistribusi","TSA Terpusat","TSA Hibrida"], ans:2,
+  exp:"TSA Terpusat: seluruh transaksi penerimaan dan pengeluaran dilakukan melalui satu rekening induk yang dikelola bank sentral; unit pemerintah tidak memiliki rekening sendiri, cocok untuk negara dengan struktur pemerintahan kecil dan terpusat."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Struktur TSA yang paling umum diadopsi berbagai negara, termasuk Indonesia, di mana satker memiliki rekening saldo nihil di bank komersial yang dikonsolidasikan ke rekening induk setiap akhir hari, adalah:",
+  opts:["TSA Terpusat","TSA Terdesentralisasi","TSA Terdistribusi","TSA Manual"], ans:1,
+  exp:"TSA Terdesentralisasi terdiri atas beberapa rekening bank independen yang dioperasikan satker, dengan saldo nihil di bank komersial yang dikonsolidasikan ke Rekening Induk TSA setiap akhir hari — struktur paling umum termasuk di Indonesia."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Salah satu tujuan implementasi TSA di Indonesia adalah meminimalkan kas mengambang di berbagai rekening bank pemerintah di luar TSA untuk:",
+  opts:["Meningkatkan jumlah rekening satker","Mengurangi risiko dan mengoptimalkan imbalan atas sumber daya kas pemerintah","Mempercepat proses audit BPK","Menambah beban administratif satker"], ans:1,
+  exp:"Salah satu tujuan TSA adalah meminimalkan kas mengambang di berbagai rekening bank pemerintah di luar TSA untuk mengurangi risiko dan mengoptimalkan imbalan atas sumber daya kas pemerintah."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Kewajiban bank pelaksana untuk menyetorkan penerimaan negara ke TSA diatur dalam perjanjian dengan batas waktu:",
+  opts:["Satu hari kerja","Tiga hari kerja","Lima hari kerja","Tujuh hari kerja"], ans:0,
+  exp:"Perjanjian antara DJPb dan bank pelaksana memuat kewajiban bank untuk menyetorkan penerimaan ke TSA dalam waktu satu hari kerja, disertai ketentuan penalti atas keterlambatan."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Tiga alasan utama pentingnya akurasi prakiraan kas menurut modul adalah menghindari krisis likuiditas, mengurangi biaya pinjaman, dan:",
+  opts:["Meningkatkan jumlah pegawai treasury","Memaksimalkan imbal hasil atas aset kas","Mempercepat proses audit eksternal","Menambah jumlah rekening satker"], ans:1,
+  exp:"Tiga alasan utama: (a) menghindari krisis likuiditas dan menjaga kredibilitas pemerintah, (b) mengurangi biaya pinjaman (cost of borrowing), dan (c) memaksimalkan imbal hasil atas aset kas (maximizing returns)."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Regulasi yang mengatur ketentuan teknis perencanaan kas Pemerintah Pusat saat ini adalah:",
+  opts:["PMK 192/PMK.05/2009","PMK 44 Tahun 2024","PMK 155/PMK.05/2023","PP 39 Tahun 2007"], ans:2,
+  exp:"Ketentuan teknis perencanaan kas Pemerintah Pusat diatur dalam PMK Nomor 155/PMK.05/2023 tentang Perencanaan Kas Pemerintah Pusat."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Penyusunan perencanaan kas Pemerintah Pusat didukung oleh tiga pihak utama, yaitu Direktorat Jenderal Perbendaharaan selaku Kuasa BUN Pusat, CPIN, dan:",
+  opts:["Bank Indonesia","Kementerian/Lembaga (K/L)","OJK","DPR"], ans:1,
+  exp:"Penyusunan perencanaan kas pemerintah pusat didukung oleh Direktorat Jenderal Perbendaharaan selaku Kuasa BUN Pusat, Cash Planning Information Network (CPIN), dan Kementerian/Lembaga (K/L)."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Operasi pengelolaan likuiditas yang dilakukan dengan menerbitkan surat utang jangka pendek (T-Bills) untuk menyeimbangkan dampak net cash flows disebut:",
+  opts:["Fine-tuning","Rough tuning","Notional pooling","Sweeping otomatis"], ans:1,
+  exp:"Rough tuning dilakukan ketika treasury menerbitkan T-Bills atau instrumen utang jangka pendek lainnya untuk menyeimbangkan dampak net cash flows dari rekening pemerintah."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Operasi pengelolaan likuiditas yang dilakukan secara lebih aktif dan presisi menggunakan instrumen seperti repo, reverse repo, dan pasar uang antarbank untuk smoothing fluktuasi harian saldo kas disebut:",
+  opts:["Rough tuning","Fine-tuning","Treasury Notional Pooling","Zero Balance Account"], ans:1,
+  exp:"Fine-tuning dilakukan secara lebih aktif dan presisi menggunakan instrumen pasar uang seperti repo, reverse repo, dan pasar uang antarbank, untuk smoothing fluktuasi harian saldo kas pemerintah di bank sentral."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Menurut PMK No. 44 Tahun 2024, Kelebihan Kas terjadi ketika saldo pada RKUN dan Sub-RKUN melebihi total kebutuhan pengeluaran setelah memperhitungkan Saldo Kas Awal dan:",
+  opts:["Total belanja modal tahun berjalan","Saldo Kas Minimal (SKM) atau cash buffer","Realisasi PNBP tahun sebelumnya","Target penerimaan pajak"], ans:1,
+  exp:"Kelebihan Kas adalah kondisi saldo RKUN dan Sub-RKUN melebihi total kebutuhan pengeluaran periode tertentu, setelah memperhitungkan Saldo Kas Awal dan Saldo Kas Minimal (SKM)/cash buffer."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Instrumen yang TIDAK termasuk cara Indonesia mengoptimalkan kelebihan kas menurut modul adalah:",
+  opts:["Penempatan di Bank Indonesia","Reverse Repo dengan bank umum","Pembelian saham di bursa efek","Pembelian SBN di pasar sekunder"], ans:2,
+  exp:"Instrumen optimalisasi kelebihan kas di Indonesia meliputi penempatan di BI, penempatan di BUMPUN, Reverse Repo bank umum, pembelian SBN pasar sekunder, Treasury Notional Pooling, dan Reksus PHLN/SBSN — bukan pembelian saham di bursa."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Saldo Anggaran Lebih (SAL) merupakan akumulasi netto dari:",
+  opts:["SiLPA dan SiKPA tahun anggaran sebelumnya dan berjalan","Total realisasi belanja modal","Total penerimaan PNBP tahunan","Total utang jatuh tempo"], ans:0,
+  exp:"SAL adalah akumulasi netto dari SiLPA (Sisa Lebih Pembiayaan Anggaran) dan SiKPA (Sisa Kurang Pembiayaan Anggaran) dari tahun sebelumnya dan tahun berjalan setelah penutupan, ditambah/dikurangi koreksi pembukuan."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Perbedaan mendasar SAL sebagai Cash Buffer dibandingkan Fiscal Buffer adalah:",
+  opts:["Cash Buffer bersifat permanen mengurangi SAL, Fiscal Buffer sementara","Cash Buffer digunakan sementara dan tidak menjadi bagian postur APBN (off budget), sedangkan Fiscal Buffer digunakan permanen dan menjadi bagian postur APBN (on budget)","Cash Buffer hanya untuk belanja modal","Fiscal Buffer tidak tercatat dalam arus kas"], ans:1,
+  exp:"SAL sebagai Cash Buffer digunakan sementara dengan harapan dikembalikan, bersifat off budget namun tercatat on treasury; sedangkan Fiscal Buffer digunakan jangka panjang secara permanen mengurangi SAL dan menjadi bagian postur APBN (on budget)."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Metode perhitungan jumlah cash buffer pemerintah yang digunakan dalam modul adalah pendekatan:",
+  opts:["Best case scenario","Worst case scenario","Average case scenario","Median case scenario"], ans:1,
+  exp:"Metode perhitungan jumlah cash buffer pemerintah dilakukan melalui pendekatan worst case scenario, yaitu dengan melihat kebutuhan pendanaan pemerintah pada saat kondisi terburuk."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Saat ini, SAL likuid di Bank Indonesia memperoleh remunerasi dengan skema tenor overnight (ON) pada tingkat suku bunga sebesar:",
+  opts:["50% dari BI Rate","65% dari BI Rate","80,475% dari BI Rate","100% dari BI Rate"], ans:2,
+  exp:"SAL likuid di Bank Indonesia memperoleh remunerasi dengan skema tenor overnight (ON) pada tingkat suku bunga sebesar 80,475% dari suku bunga acuan Bank Indonesia (BI Rate)."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Forum lintas unit eselon I di Kementerian Keuangan yang berperan layaknya 'dewan direksi' bagi neraca keuangan pemerintah adalah:",
+  opts:["ALCo Regional","ALCo Pusat","Cash Planning Information Network","Treasury Dealing Room"], ans:1,
+  exp:"ALCo Pusat berperan sebagai semacam 'dewan direksi' bagi neraca keuangan pemerintah, terdiri dari pejabat tinggi lintas eselon I: DJPb, DJA, DJPPR, dan BKF."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Pembentukan ALCo merupakan respons kelembagaan terhadap rekomendasi dari lembaga internasional, yaitu:",
+  opts:["World Trade Organization (WTO)","IMF dan World Bank","ASEAN Secretariat","Bank for International Settlements (BIS)"], ans:1,
+  exp:"Pembentukan ALCo merupakan respons kelembagaan terhadap rekomendasi dari International Monetary Fund (IMF) dan World Bank (WB) untuk meningkatkan efektivitas kebijakan fiskal melalui koordinasi makro-fiskal-moneter."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Fase perkembangan ALCo (2021-2023) yang menunjukkan arah strategis desentralisasi diwujudkan melalui:",
+  opts:["Pembentukan Tim ALM pada 2009","Pilot dan implementasi ALCo Regional","Penerbitan buletin APBN Kita","Formalisasi SOP ALM"], ans:1,
+  exp:"Perkembangan mutakhir ALCo (2021-2023) menunjukkan arah desentralisasi melalui pilot dan implementasi ALCo Regional, sebuah mekanisme untuk mengartikulasikan disiplin fiskal hingga tingkat sub-nasional."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"ALCo Regional merupakan komponen dari:",
+  opts:["Direktorat Jenderal Anggaran","Regional Chief Economist (RCE) yang terhubung dengan ALCo Pusat","Badan Pemeriksa Keuangan Perwakilan","Kantor Wilayah DJPPR"], ans:1,
+  exp:"ALCo Regional merupakan komponen Regional Chief Economist (RCE) yang terhubung dengan ALCo Pusat Kementerian Keuangan."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Rekening Pengeluaran pada Bank Operasional (BO) berfungsi menampung dana untuk menyalurkan SP2D, kecuali:",
+  opts:["Belanja Barang","Belanja Modal","Gaji bulanan","Belanja Bansos"], ans:2,
+  exp:"Rekening Pengeluaran Pada Bank Operasional menampung dana untuk menyalurkan SP2D selain gaji bulanan; gaji bulanan disalurkan melalui Rekening Pengeluaran pada Bank Penyalur Gaji (BPG)."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Mekanisme perbankan di mana rekening pengeluaran pemerintah bersaldo nol setiap pagi hari, menerima dropping dana sesuai kebutuhan SP2D, dan sisa saldo dikembalikan ke RKUN di akhir hari disebut:",
+  opts:["Treasury Notional Pooling","Zero Balance Account (ZBA)","Cash Sweeping","Fine-tuning"], ans:1,
+  exp:"Zero Balance Account (ZBA) beroperasi dengan prinsip saldo nihil: pagi hari saldo nol, menerima dropping sesuai kebutuhan SP2D, dan di akhir hari sisa saldo dikembalikan ke RKUN sehingga rekening kembali bersaldo nol."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Saat ini, Direktorat PKN mengelola berapa Rekening Bank Operasional (BO)?",
+  opts:["3 rekening","4 rekening","5 rekening","7 rekening"], ans:2,
+  exp:"Saat ini Dit. PKN mengelola 5 Rekening Bank Operasional, 4 Rekening Bank Operasional Valas, 32 Bank Penyalur Gaji, serta 41 Rekening Retur BO dan BPG."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Rekening yang digunakan untuk menampung dana SP2D yang tidak tersalurkan dan dikembalikan oleh bank penerima, dengan saldo akhir hari tidak dinihilkan, adalah:",
+  opts:["Rekening Retur","Rekening Penerimaan","Reksus PHLN","Rekening Pengeluaran Lainnya"], ans:0,
+  exp:"Rekening Retur digunakan untuk menampung dana SP2D yang tidak tersalurkan dan dikembalikan bank penerima; saldo akhir hari tidak dinihilkan, dengan jumlah 41 rekening (setara total BO, BPG, dan BO Valas)."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Bank Operasional Valas (BO Valas) digunakan untuk pembayaran UP dan LS satker dengan SP2D dalam mata uang:",
+  opts:["EUR","USD","JPY","SGD"], ans:1,
+  exp:"BO Valas digunakan untuk pembayaran UP dan LS satker mitra KPPN seluruh Indonesia dengan SP2D dalam mata uang USD, dengan biaya transaksi dibebankan pada DIPA BUN."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Rekening penampungan dan penyaluran Belanja K/L dan On Granting ke Pemda dengan sumber dana Pinjaman/Hibah Luar Negeri disebut:",
+  opts:["Reksus SBSN","Reksus PHLN","Rekening Retur","Rekening BO Valas"], ans:1,
+  exp:"Reksus PHLN adalah rekening penampungan dan penyaluran Belanja K/L dan On Granting ke Pemda dengan sumber dana PHLN dari Lender/Donor, dibuka pada Bank Himbara dengan mata uang IDR."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Setiap setoran penerimaan negara yang masuk ke Rekening Penerimaan di Bank Umum akan dilimpahkan ke RKUN di Bank Indonesia pada setiap akhir hari kerja melalui mekanisme:",
+  opts:["Fine-tuning","Sweeping otomatis","Treasury Notional Pooling","Rough tuning"], ans:1,
+  exp:"Melalui mekanisme sweeping otomatis, seluruh saldo penerimaan kas negara akan dilimpahkan ke RKUN di Bank Indonesia pada setiap akhir hari kerja untuk memastikan penerimaan negara terkonsolidasi dengan cepat."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Sebelum reformasi PMK No. 183/PMK.05/2019, pada tahun 2017 tercatat jumlah rekening Kementerian/Lembaga yang tersebar mencapai:",
+  opts:["Sekitar 10.000 rekening","Sekitar 20.000 rekening","Tidak kurang dari 35.714 rekening","Lebih dari 100.000 rekening"], ans:2,
+  exp:"Pada tahun 2017, tercatat tidak kurang dari 35.714 rekening tersebar di seluruh K/L, terdiri dari 24.108 rekening pengeluaran, 1.980 rekening penerimaan, dan 9.626 rekening lainnya."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Regulasi yang menjadi dasar restrukturisasi rekening pengeluaran K/L melalui penerapan rekening induk dan rekening virtual adalah:",
+  opts:["PMK 182/PMK.05/2017","PMK 183/PMK.05/2019","PMK 155/PMK.05/2023","PMK 44 Tahun 2024"], ans:1,
+  exp:"PMK 183/PMK.05/2019 tentang Pengelolaan Rekening Pengeluaran Milik Kementerian Negara/Lembaga menggantikan PMK 182/PMK.05/2017, mendasari restrukturisasi rekening pengeluaran melalui rekening induk dan rekening virtual."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Dalam struktur rekening pengeluaran K/L pasca restrukturisasi, rekening induk dibuka pada tingkat:",
+  opts:["Satuan Kerja (Satker)","Eselon I","KPPN","Kementerian Keuangan"], ans:1,
+  exp:"Rekening induk hanya dibuka pada tingkat eselon I yang berfungsi sebagai sarana monitoring dan konsolidasi saldo rekening virtual Satker yang dikelola di bawahnya."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Piloting penggunaan rekening induk dan rekening virtual sebagai rekening pengeluaran pertama kali dilakukan pada satker lingkup DJPb dengan menggunakan tiga rekening induk pada tiga bank, yaitu:",
+  opts:["BCA, CIMB Niaga, Danamon","BRI, BNI, dan Mandiri","BSI, BTN, Bank Mega","Bank DKI, Bank Jateng, Bank Jatim"], ans:1,
+  exp:"Piloting rekening induk dan rekening virtual dilakukan bulan Maret 2019 pada Satker lingkup DJPb, terdiri atas tiga rekening induk pada tiga bank (BRI, BNI, dan Mandiri) dan 219 rekening virtual."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Kewenangan atas pembukaan, pengoperasian, dan penutupan Rekening K/L pada Bank Umum serta pelaporan rekening kepada Kuasa BUN berada pada:",
+  opts:["Direktur Jenderal Perbendaharaan","Menteri/Pimpinan Lembaga","Kepala KPPN","Bank Indonesia"], ans:1,
+  exp:"Menteri/Pimpinan Lembaga berwenang atas pembukaan, pengoperasian, dan penutupan Rekening pada Bank Umum serta pelaporan rekening kepada Kuasa BUN, yang pelaksanaannya dilaksanakan oleh KPA."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Pengelolaan Rekening Lainnya berupa Rekening Milik Badan Layanan Umum (BLU) dilaksanakan oleh:",
+  opts:["Kuasa Pengguna Anggaran biasa","Kepala Satuan Kerja/Pimpinan BLU","Menteri Keuangan langsung","Direktur Jenderal Anggaran"], ans:1,
+  exp:"Kewenangan pengelolaan Rekening umumnya dilaksanakan oleh KPA, kecuali untuk pengelolaan Rekening Lainnya berupa Rekening Milik BLU yang dilaksanakan oleh Kepala Satuan Kerja/Pimpinan BLU."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Restrukturisasi rekening pemerintah menjadi bagian dari Digital Payment Ecosystem yang bertujuan memastikan:",
+  opts:["Penurunan jumlah pegawai bank","Efektivitas dan efisiensi penyaluran belanja APBN","Peningkatan suku bunga deposito","Pengurangan pajak penghasilan"], ans:1,
+  exp:"Restrukturisasi rekening pemerintah menjadi bagian dari Digital Payment Ecosystem yang bertujuan memastikan efektivitas dan efisiensi penyaluran belanja APBN, seiring pergeseran dari transaksi berbasis kas tunai."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Peraturan Menteri Keuangan yang mengatur Sistem Penerimaan Negara Secara Elektronik adalah:",
+  opts:["PMK 225/PMK.05/2020","PMK 155/PMK.05/2023","PMK 183/PMK.05/2019","PMK 44 Tahun 2024"], ans:0,
+  exp:"Sistem Penerimaan Negara diatur dalam PMK Nomor 225/PMK.05/2020 tentang Sistem Penerimaan Negara Secara Elektronik."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Lembaga keuangan yang ditunjuk oleh Kuasa BUN Pusat untuk menerima setoran penerimaan negara disebut:",
+  opts:["Bank Operasional","Bank Persepsi","Bank Penyalur Gaji","Bank Sentral"], ans:1,
+  exp:"Bank Persepsi adalah bank umum yang ditunjuk oleh Kuasa BUN Pusat untuk menerima setoran penerimaan negara, sesuai kewenangan BUN dalam Pasal 7 ayat (2) huruf f UU No. 1 Tahun 2004."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Sebelum bank/kantor pos/lembaga lainnya ditunjuk sebagai bank/pos persepsi, tahapan yang harus dilalui antara lain lulus pengujian teknis berupa:",
+  opts:["Audit BPK dan sertifikasi ISO","System Integration Testing (SIT) dan User Acceptance Test (UAT)","Uji kelayakan modal minimum saja","Sertifikasi Bank Indonesia semata"], ans:1,
+  exp:"Proses penunjukan mencakup pengajuan permohonan, memperoleh izin prinsip, lulus System Integration Testing (SIT) dan User Acceptance Test (UAT) yang diuji Kuasa BUN Pusat, serta memperoleh surat penetapan."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Modul Penerimaan Negara Generasi Kedua (MPN-G2) mulai menerapkan konsep yang memungkinkan setoran penerimaan negara dilakukan di mana saja dan kapan saja, yaitu:",
+  opts:["Sistem manual SSP","Konsep e-billing","Rekening Koran otomatis","Zero Balance Account"], ans:1,
+  exp:"MPN-G2 ditetapkan melalui PMK 32/PMK.05/2014 dan mulai menerapkan konsep e-billing sistem, sehingga setoran penerimaan negara dapat dilakukan di mana saja dan kapan saja melalui kanal pembayaran elektronik."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"MPN-G2 berhasil diimplementasikan penuh pada tahun:",
+  opts:["2007","2014","2017","2020"], ans:2,
+  exp:"MPN-G2 baru berhasil diimplementasikan penuh di tahun 2017, ditandai seluruh setoran negara menggunakan kode billing dan dibayar melalui kanal pembayaran elektronik collecting agent."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Sebelum MPN diimplementasikan, terdapat tiga sistem penatausahaan penerimaan negara yang masih tersegmentasi, salah satunya adalah sistem yang dikelola oleh Direktorat Jenderal Pajak, yaitu:",
+  opts:["Electronic Data Interchange (EDI)","Sistem Monitoring Pelaporan Pembayaran Pajak (MP3)","Sistem Penerimaan Negara (SISPEN)","Sistem Perbendaharaan dan Anggaran Negara (SPAN)"], ans:1,
+  exp:"Sebelum MPN, terdapat tiga sistem tersegmentasi: MP3 oleh Ditjen Pajak, EDI oleh Ditjen Bea dan Cukai, serta SISPEN oleh Ditjen Anggaran dan Ditjen Perbendaharaan."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Sejak 19 Mei 2025, proses Process Payment Request (PPR) yang sebelumnya dilakukan di Seksi Bank KPPN kini dilakukan secara terpusat oleh:",
+  opts:["Direktorat Jenderal Anggaran","Direktorat Pengelolaan Kas Negara (Dit. PKN)","Bank Indonesia","Direktorat Jenderal Pajak"], ans:1,
+  exp:"Sebelumnya PPR dilakukan di Seksi Bank KPPN, namun sejak 19 Mei 2025 Process Payment Request dilakukan secara terpusat oleh Direktorat Pengelolaan Kas Negara (Dit. PKN)."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Dalam alur penyaluran dana APBN, pihak yang berperan sebagai eksekutor setelah menerima SP2D dari Direktorat PKN adalah:",
+  opts:["Kantor Pelayanan Perbendaharaan Negara (KPPN)","Bank Operasional","Direktorat Jenderal Anggaran","Bank Indonesia"], ans:1,
+  exp:"Bank Operasional memegang peran sebagai eksekutor dalam alur penyaluran dana APBN; setelah menerima SP2D dari Direktorat PKN, Bank Operasional memproses pencairan dan penyaluran dana ke rekening tujuan."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Menurut Pattanayak dan Fainboim (2010), TSA merupakan struktur terintegrasi dari rekening-rekening milik pemerintah yang memberikan gambaran:",
+  opts:["Terpisah dan terdesentralisasi atas sumber kas","Terkonsolidasi atas sumber dan saldo kas pemerintah","Hanya atas rekening penerimaan","Hanya atas rekening pengeluaran"], ans:1,
+  exp:"Pattanayak dan Fainboim (2010) menguraikan TSA sebagai struktur terintegrasi dari rekening-rekening milik pemerintah yang dapat memberikan gambaran terkonsolidasi atas sumber dan saldo kas pemerintah."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Praktik TSA di Indonesia saat ini cenderung mengarah pada kategori:",
+  opts:["TSA Terpusat","TSA Terdesentralisasi","TSA Terdistribusi","TSA Ganda"], ans:1,
+  exp:"Praktik TSA di Indonesia saat ini cenderung mengarah pada kategori TSA Terdesentralisasi, terkonsolidasi ke dalam rekening tunggal yaitu RKUN pada Bank Indonesia."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Menurut PMK 154/PMK.05/2014, rekonsiliasi bank meliputi aktivitas pencocokan data transaksi pada SPAN dengan:",
+  opts:["Laporan keuangan tahunan K/L","Rekening koran yang bersumber dari BI/Bank/Pos","Data APBN-P","Data hasil audit BPK"], ans:1,
+  exp:"Rekonsiliasi bank meliputi aktivitas pencocokan data transaksi pada SPAN (dari Modul Pembayaran, Modul Penerimaan, dan Modul Kas) dengan rekening koran yang bersumber dari BI/Bank/Pos, dilakukan harian oleh unit pengelola rekening pada Kuasa BUN."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Salah satu alasan strategis pentingnya rekonsiliasi harian adalah sebagai sistem peringatan dini (early warning system) untuk:",
+  opts:["Menentukan besaran gaji pegawai","Mendeteksi masalah operasional seperti gangguan sistem pelimpahan (sweeping) bank persepsi","Menghitung besaran pajak terutang","Menyusun RKA-K/L tahun berikutnya"], ans:1,
+  exp:"Rekonsiliasi harian berfungsi sebagai early warning system; misalnya jika transaksi penerimaan di MPN tidak muncul dalam laporan bank, ini dapat menandakan gangguan sistem sweeping di Bank Persepsi."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Rekonsiliasi Penerimaan Negara oleh KPPN Khusus Penerimaan dilaksanakan setiap hari kerja paling lambat pukul:",
+  opts:["07.00 WIB","09.00 WIB","12.00 WIB","15.00 WIB"], ans:1,
+  exp:"Rekonsiliasi Penerimaan Negara dilaksanakan setiap hari kerja paling lambat pukul 09.00 WIB pada hari kerja berikutnya, menggunakan portal rekonsiliasi Modul Penerimaan Negara (MPN)."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Rekonsiliasi harian menjadi fondasi akuntabilitas karena UU No. 1 Tahun 2004 mengamanatkan pemerintah menyusun:",
+  opts:["Rencana Kerja Pemerintah (RKP)","Laporan Keuangan Pemerintah Pusat (LKPP) yang andal dan dapat diaudit","Nota Keuangan RAPBN","Kerangka Ekonomi Makro dan Pokok-Pokok Kebijakan Fiskal"], ans:1,
+  exp:"UU No. 1 Tahun 2004 mengamanatkan pemerintah menyusun LKPP yang andal dan dapat diaudit; rekonsiliasi harian adalah proses kontrol kualitas fundamental yang memastikan data transaksi berkualitas tinggi sebagai bahan penyusunan LKPP."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Empat jenis penerimaan negara yang diatur dalam Sistem Penerimaan Negara Secara Elektronik meliputi Penerimaan Perpajakan, PNBP, Penerimaan Pembiayaan, dan:",
+  opts:["Penerimaan Hibah","Penerimaan Retribusi Daerah","Penerimaan Migas Daerah","Penerimaan Zakat Nasional"], ans:0,
+  exp:"Penerimaan negara yang diatur meliputi Penerimaan Perpajakan, PNBP, Penerimaan Pembiayaan, dan Penerimaan Hibah (termasuk penerimaan dana PFK, pengembalian belanja, setoran sisa UP/TUP, dan penerimaan lainnya)."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Kanal pembayaran penerimaan negara disediakan oleh Collecting Agent yang terdiri atas Bank Persepsi, Bank Persepsi Valas, Pos Persepsi, dan:",
+  opts:["Lembaga Persepsi Lainnya dan Lembaga Persepsi Lainnya Valas","Bank Sentral saja","Kantor Pajak Pratama","Kantor Bea Cukai"], ans:0,
+  exp:"Collecting Agent terdiri atas Bank Persepsi, Bank Persepsi Valas, Pos Persepsi, Lembaga Persepsi Lainnya, dan Lembaga Persepsi Lainnya Valas, menyediakan kanal pembayaran seperti ATM, internet banking, EDC, dan virtual account."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Sistem transfer dana elektronik antar-bank di Indonesia yang penyelesaiannya dilakukan seketika per transaksi (gross settlement) untuk transaksi bernilai besar dan mendesak adalah:",
+  opts:["SKNBI","BI-RTGS","SPAN","MPN-G3"], ans:1,
+  exp:"BI-RTGS (Real Time Gross Settlement) adalah sistem transfer dana elektronik antar-bank yang penyelesaiannya dilakukan seketika per transaksi secara individual, dirancang untuk transaksi bernilai besar (di atas Rp100 juta) dan mendesak."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Karakteristik transaksi yang telah selesai diproses BI-RTGS adalah bersifat final dan:",
+  opts:["Dapat dibatalkan dalam 24 jam","Tidak dapat ditarik kembali (irrevocable)","Harus direkonsiliasi ulang oleh nasabah","Dapat diubah nominal transaksinya"], ans:1,
+  exp:"Transaksi yang telah selesai diproses BI-RTGS bersifat final dan tidak dapat dibatalkan (irrevocable), memberikan kepastian hukum tinggi bagi pihak yang bertransaksi."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Sistem transfer dana elektronik BI untuk transaksi ritel bernilai lebih kecil, dengan penyelesaian dilakukan secara batch/kolektif pada periode tertentu, adalah:",
+  opts:["BI-RTGS","Sistem Kliring Nasional Bank Indonesia (SKNBI)","SPAN","MPN-G2"], ans:1,
+  exp:"SKNBI adalah sistem transfer dana elektronik yang memproses transaksi ritel antar-bank, dengan penyelesaian dilakukan secara batch/kolektif melalui proses kliring dan penyelesaian netting."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"SKNBI umumnya digunakan pemerintah untuk transaksi yang bersifat massal dan bernilai relatif kecil, contohnya:",
+  opts:["Pembayaran kontrak infrastruktur besar","Pembayaran gaji pegawai, pensiun, atau bantuan sosial ke ribuan/jutaan rekening","Pembayaran utang luar negeri jatuh tempo","Transfer dana ke rekening BUMPUN"], ans:1,
+  exp:"SKNBI digunakan untuk transaksi pemerintah yang bersifat massal dan bernilai relatif kecil, seperti pembayaran gaji pegawai, pensiun, atau bantuan sosial ke ribuan/jutaan rekening individu di berbagai bank."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Batas limit maksimal transfer dana melalui SKNBI adalah:",
+  opts:["Rp100 juta","Rp500 juta","Rp1 miliar","Tidak ada batas maksimal"], ans:2,
+  exp:"SKNBI memiliki limit maksimal transfer sampai dengan Rp1 miliar, sedangkan BI-RTGS digunakan untuk transaksi di atas Rp100 juta tanpa batas maksimal."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"Ketika SP2D diterbitkan, proses dropping dana dari RKUN di BI ke Rekening Pengeluaran Kuasa BUN di Bank Operasional dilakukan melalui sistem:",
+  opts:["SKNBI","BI-RTGS","MPN-G3","SPAN"], ans:1,
+  exp:"BI-RTGS menjadi 'jalan tol' utama aliran dana pengeluaran negara — ketika SP2D diterbitkan, dropping dana dari RKUN di BI ke Rekening Pengeluaran Kuasa BUN di Bank Operasional dilakukan melalui sistem BI-RTGS."},
+
+{bab:"Bab 3 — Sistem Pembayaran", q:"SPAN merupakan sub-program dari program reformasi keuangan publik terbesar dalam sejarah Indonesia yang bernama:",
+  opts:["Program Reformasi Birokrasi Nasional","Program Reformasi Penganggaran dan Perbendaharaan Negara","Program Digitalisasi Keuangan Negara","Program Modernisasi Perpajakan Nasional"], ans:1,
+  exp:"SPAN merupakan sub-program dari Program Reformasi Penganggaran dan Perbendaharaan Negara, program reformasi keuangan publik terbesar dalam sejarah Indonesia, berdasarkan KMK Nomor 113/KMK.01/2011."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Fungsi pengawasan rekening pemerintah berperan sebagai pilar penegakan (enforcement) yang memastikan seluruh prinsip berikut benar-benar terwujud, kecuali:",
+  opts:["Sentralisasi kas","Efisiensi","Akuntabilitas","Maksimalisasi jumlah rekening satker"], ans:3,
+  exp:"Pengawasan rekening pemerintah memastikan prinsip sentralisasi kas, efisiensi, dan akuntabilitas terwujud dalam praktik — bukan untuk memaksimalkan jumlah rekening satker, justru sebaliknya menyederhanakannya."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Satuan tugas khusus yang dibentuk Kementerian Keuangan pada masa awal transisi TSA untuk menertibkan rekening pemerintah yang tersebar disebut:",
+  opts:["Tim CPIN","Tim Penertiban Rekening Pemerintah (TPRP)","ALCo Regional","Treasury Dealing Room"], ans:1,
+  exp:"Tim Penertiban Rekening Pemerintah (TPRP) dibentuk sebagai satuan tugas khusus dengan misi menertibkan lanskap rekening pemerintah, melalui inventarisasi, verifikasi, konsolidasi, dan penutupan rekening yang tidak lagi relevan."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Salah satu tugas utama TPRP pada tahap awal reformasi adalah melakukan pendataan dan pemetaan menyeluruh terhadap seluruh rekening pemerintah, yang disebut:",
+  opts:["Verifikasi","Inventarisasi (Sensus Rekening)","Konsolidasi","Remunerasi"], ans:1,
+  exp:"Inventarisasi (Sensus Rekening) adalah langkah diagnostik TPRP untuk melakukan pendataan dan pemetaan menyeluruh terhadap seluruh rekening yang mengatasnamakan K/L/Satker di seluruh bank umum."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Setelah misi penertiban awal selesai, fungsi pengawasan rekening yang dahulu dijalankan TPRP kini dilembagakan menjadi tugas rutin dari:",
+  opts:["Bank Indonesia","Direktorat Jenderal Perbendaharaan (DJPb) dan KPPN","Direktorat Jenderal Anggaran","Badan Pemeriksa Keuangan"], ans:1,
+  exp:"Setelah TPRP dibubarkan, fungsi pengawasan dilembagakan menjadi bagian dari tugas rutin Direktorat Jenderal Perbendaharaan (DJPb) dan instansi vertikalnya, yaitu KPPN di daerah."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Prinsip 'satu pintu' dalam otorisasi rekening pemerintah berarti:",
+  opts:["Setiap satker dapat membuka rekening secara mandiri","Tidak ada K/L atau Satker yang dapat membuka rekening secara sepihak tanpa persetujuan BUN/Kuasanya","Rekening hanya boleh dibuka di satu bank saja","Semua rekening harus dilaporkan langsung ke DPR"], ans:1,
+  exp:"Prinsip 'satu pintu' berarti tidak ada K/L atau Satker yang dapat membuka rekening secara sepihak; setiap pembukaan dan penutupan rekening harus melalui prosedur persetujuan ketat dari BUN atau Kuasanya."},
+
+{bab:"Bab 2 — Pengelolaan Rekening Pemerintah", q:"Salah satu ketentuan pengelolaan rekening antara Kuasa BUN dan Bank Umum adalah bahwa bank tidak akan:",
+  opts:["Menyediakan layanan mobile banking","Mewajibkan setoran awal dalam pembukaan rekening milik Satker K/L","Melakukan sweeping harian","Menerima setoran penerimaan negara"], ans:1,
+  exp:"Salah satu ketentuan pengelolaan rekening adalah bank tidak akan mewajibkan setoran awal dalam pembukaan rekening milik Satuan Kerja lingkup K/L, dan tidak akan memungut biaya administrasi rekening."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Dalam banking arrangement TSA, jika bank sentral tidak memiliki jaringan cabang memadai, fungsi perbankan ritel dapat dialihkan kepada:",
+  opts:["Bank komersial yang ditunjuk sebagai agen","Kantor pos saja","Lembaga swadaya masyarakat","Pemerintah daerah"], ans:0,
+  exp:"Jika bank sentral tidak memiliki jaringan cabang memadai atau tidak mampu menangani volume transaksi besar, fungsi perbankan ritel dapat dialihkan kepada lembaga keuangan lain seperti bank komersial yang ditunjuk sebagai agen."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Struktur TSA di mana kantor perbendaharaan daerah mengelola rekening Bank Operasional (BO) daerah untuk transaksi satker di wilayahnya, didanai dari TSA pusat, disebut:",
+  opts:["TSA Terpusat","TSA Terdesentralisasi","TSA Terdistribusi","TSA Regional"], ans:2,
+  exp:"TSA Terdistribusi terdiri dari rekening bank sentral dan rekening bank komersial yang dioperasikan kantor perbendaharaan di daerah untuk transaksi satker di wilayahnya, didanai dari kantor pusat perbendaharaan."},
+
+{bab:"Bab 1 — Pengelolaan Kas Modern", q:"Salah satu manfaat implementasi TSA adalah meningkatkan akuntabilitas melalui:",
+  opts:["Penambahan jumlah rekening satker","Transparansi pengelolaan penerimaan dan belanja negara","Penghapusan fungsi KPPN","Desentralisasi penuh kewenangan BUN"], ans:1,
+  exp:"Salah satu tujuan implementasi TSA adalah meningkatkan akuntabilitas melalui transparansi pengelolaan penerimaan dan belanja negara, di samping pengendalian arus kas dan minimalisasi idle cash."}
+];
+
+const MODULES = {
+  pelaksanaan_anggaran: {
+    title: "Pelaksanaan Anggaran",
+    subtitle: "Mekanisme DIPA, PNBP, Hibah, Transfer ke Daerah, dan Monev",
+    bank: BANK_PELAKSANAAN_ANGGARAN,
+    active: true
+  },
+  pengelolaan_kas: {
+    title: "Pengelolaan Kas",
+    subtitle: "TSA, Perencanaan & Optimalisasi Kas, Rekening Pemerintah, Sistem Pembayaran",
+    bank: BANK_PENGELOLAAN_KAS,
+    active: true
+  },
+  modul_3: { title: "Modul 3", subtitle: "Segera hadir", bank: [], active: false },
+  modul_4: { title: "Modul 4", subtitle: "Segera hadir", bank: [], active: false },
+  modul_5: { title: "Modul 5", subtitle: "Segera hadir", bank: [], active: false },
+  modul_6: { title: "Modul 6", subtitle: "Segera hadir", bank: [], active: false }
+};
+
+let currentModuleId = null;
 let session = [];
 let idx = 0;
 let score = 0;
 let answered = false;
 let babStats = {};
 
-const HISTORY_KEY = 'latihan_pa_history_v1';
+function historyKey(){
+  return 'latihan_history_v1_' + currentModuleId;
+}
 
 function loadHistory(){
   try{
-    const raw = localStorage.getItem(HISTORY_KEY);
+    const raw = localStorage.getItem(historyKey());
     return raw ? JSON.parse(raw) : [];
   }catch(e){ return []; }
 }
@@ -733,16 +1098,13 @@ function loadHistory(){
 function saveAttempt(babStatsResult){
   try{
     const history = loadHistory();
-    history.push({
-      date: new Date().toISOString(),
-      babStats: babStatsResult
-    });
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    history.push({ date: new Date().toISOString(), babStats: babStatsResult });
+    localStorage.setItem(historyKey(), JSON.stringify(history));
   }catch(e){ /* storage unavailable, skip silently */ }
 }
 
 function clearHistory(){
-  try{ localStorage.removeItem(HISTORY_KEY); }catch(e){}
+  try{ localStorage.removeItem(historyKey()); }catch(e){}
 }
 
 function aggregateHistory(){
@@ -761,6 +1123,14 @@ function aggregateHistory(){
   return {agg, sessionCount: history.length, lastDate: history.length ? history[history.length-1].date : null};
 }
 
+function babOrderForModule(){
+  const seen = [];
+  MODULES[currentModuleId].bank.forEach(q=>{
+    if(!seen.includes(q.bab)) seen.push(q.bab);
+  });
+  return seen;
+}
+
 function shuffle(arr){
   const a = arr.slice();
   for(let i=a.length-1;i>0;i--){
@@ -770,27 +1140,69 @@ function shuffle(arr){
   return a;
 }
 
+function renderModuleSelect(){
+  document.getElementById('mastheadTitle').textContent = 'Latihan Soal · Treasury Operation';
+  document.getElementById('mastheadSub').textContent = 'Pilih modul pembelajaran yang ingin dilatih';
+  const sheet = document.getElementById('sheet');
+  let cards = '';
+  Object.keys(MODULES).forEach(id=>{
+    const m = MODULES[id];
+    if(m.active){
+      cards += `
+        <div class="module-card" data-id="${id}">
+          <div>
+            <div class="m-title">${m.title}</div>
+            <div class="m-sub">${m.subtitle} · ${m.bank.length} soal</div>
+          </div>
+          <div class="m-arrow">→</div>
+        </div>`;
+    } else {
+      cards += `
+        <div class="module-card disabled">
+          <div>
+            <div class="m-title">${m.title}</div>
+            <div class="m-sub">${m.subtitle}</div>
+          </div>
+          <div class="badge-soon">Segera hadir</div>
+        </div>`;
+    }
+  });
+  sheet.innerHTML = `
+    <div class="field-label" style="margin-top:0;">Modul Tersedia</div>
+    ${cards}
+  `;
+  sheet.querySelectorAll('.module-card[data-id]').forEach(card=>{
+    card.onclick = ()=>{
+      currentModuleId = card.dataset.id;
+      const m = MODULES[currentModuleId];
+      document.getElementById('mastheadTitle').textContent = 'Latihan Soal · ' + m.title;
+      document.getElementById('mastheadSub').textContent = m.subtitle;
+      renderSetup();
+    };
+  });
+}
+
 function renderSetup(){
   const sheet = document.getElementById('sheet');
+  const bank = MODULES[currentModuleId].bank;
+  const babList = babOrderForModule();
+  let scopeChips = `<div class="chip active" data-v="all">Acak semua bab</div>`;
+  babList.forEach((bab, i)=>{
+    const short = bab.replace(/^Bab \d+ — /,'');
+    scopeChips += `<div class="chip" data-v="${i+1}">Bab ${i+1}: ${short}</div>`;
+  });
   sheet.innerHTML = `
-    <div class="field-label">Jumlah soal</div>
+    <div class="field-label" style="margin-top:0;">Jumlah soal</div>
     <div class="choice-row" id="countRow">
       <div class="chip" data-v="10">10 soal</div>
       <div class="chip active" data-v="20">20 soal</div>
-      <div class="chip" data-v="${BANK.length}">Semua (${BANK.length} soal)</div>
+      <div class="chip" data-v="${bank.length}">Semua (${bank.length} soal)</div>
     </div>
     <div class="field-label">Cakupan bab</div>
-    <div class="choice-row" id="scopeRow">
-      <div class="chip active" data-v="all">Acak semua bab</div>
-      <div class="chip" data-v="1">Bab 1</div>
-      <div class="chip" data-v="2">Bab 2</div>
-      <div class="chip" data-v="3">Bab 3</div>
-      <div class="chip" data-v="4">Bab 4</div>
-      <div class="chip" data-v="5">Bab 5</div>
-      <div class="chip" data-v="6">Bab 6</div>
-    </div>
+    <div class="choice-row" id="scopeRow">${scopeChips}</div>
     <button class="start-btn" id="startBtn">Mulai Latihan</button>
     <button class="link-btn" id="viewHistoryBtn">Lihat Monitoring Riwayat Latihan</button>
+    <button class="link-btn" id="backModuleBtn">← Ganti Modul</button>
   `;
   let count = 20, scope = 'all';
   document.querySelectorAll('#countRow .chip').forEach(c=>{
@@ -808,10 +1220,12 @@ function renderSetup(){
     };
   });
   document.getElementById('viewHistoryBtn').onclick = renderHistory;
+  document.getElementById('backModuleBtn').onclick = renderModuleSelect;
   document.getElementById('startBtn').onclick = ()=>{
-    let pool = BANK;
+    let pool = bank;
     if(scope !== 'all'){
-      pool = BANK.filter(q => q.bab.startsWith('Bab ' + scope + ' '));
+      const targetBab = babList[parseInt(scope)-1];
+      pool = bank.filter(q => q.bab === targetBab);
     }
     const shuffled = shuffle(pool);
     session = shuffled.slice(0, Math.min(count, shuffled.length)).map(q=>{
@@ -907,12 +1321,12 @@ function renderResults(){
 function renderHistory(){
   const sheet = document.getElementById('sheet');
   const {agg, sessionCount, lastDate} = aggregateHistory();
-  const babOrder = ["Bab 1 — Pejabat Perbendaharaan","Bab 2 — Mekanisme Pembayaran APBN","Bab 3 — Maksimum Pencairan PNBP","Bab 4 — Pengelolaan Hibah","Bab 5 — Transfer ke Daerah","Bab 6 — Monitoring dan Evaluasi"];
+  const babOrder = babOrderForModule();
 
   if(sessionCount === 0){
     sheet.innerHTML = `
       <div class="field-label" style="text-align:center;margin-top:0;">Monitoring Riwayat Latihan</div>
-      <div class="empty-state">Belum ada riwayat latihan tersimpan. Riwayat akan tercatat otomatis setiap kali kamu menyelesaikan satu sesi latihan.</div>
+      <div class="empty-state">Belum ada riwayat latihan tersimpan untuk modul ini. Riwayat akan tercatat otomatis setiap kali kamu menyelesaikan satu sesi latihan.</div>
       <button class="retry-btn" id="backBtn">Mulai Latihan</button>
     `;
     document.getElementById('backBtn').onclick = renderSetup;
@@ -920,25 +1334,24 @@ function renderHistory(){
   }
 
   let rows = '';
-  babOrder.forEach(bab=>{
+  babOrder.forEach((bab, i)=>{
     const s = agg[bab];
     const label = bab.replace(/^Bab \d+ — /,'');
-    const babNum = bab.match(/Bab (\d+)/)[1];
     if(!s){
       rows += `
         <div class="hist-row">
-          <div class="hist-top"><span class="hist-bab">Bab ${babNum} · ${label}</span><span class="hist-pct dim-pct">belum dicoba</span></div>
+          <div class="hist-top"><span class="hist-bab">Bab ${i+1} · ${label}</span><span class="hist-pct dim-pct">belum dicoba</span></div>
           <div class="bab-bar-track"><div class="bab-bar-fill" style="width:0%"></div></div>
         </div>`;
       return;
     }
     const pctAvg = Math.round((s.correct/s.total)*100);
     const lastN = s.trend.slice(-8);
-    const sparkline = lastN.map((v,i)=>`<div class="spark-bar" style="height:${Math.max(6,v*0.32)}px" title="${v}%"></div>`).join('');
+    const sparkline = lastN.map(v=>`<div class="spark-bar" style="height:${Math.max(6,v*0.32)}px" title="${v}%"></div>`).join('');
     rows += `
       <div class="hist-row">
         <div class="hist-top">
-          <span class="hist-bab">Bab ${babNum} · ${label}</span>
+          <span class="hist-bab">Bab ${i+1} · ${label}</span>
           <span class="hist-pct">${pctAvg}% rata-rata</span>
         </div>
         <div class="bab-bar-track"><div class="bab-bar-fill" style="width:${pctAvg}%"></div></div>
@@ -956,18 +1369,20 @@ function renderHistory(){
     <div class="result-sub" style="margin-bottom:22px;">${sessionCount} sesi tercatat · Terakhir: ${lastDateLabel}</div>
     ${rows}
     <button class="start-btn" id="newSessionBtn" style="margin-top:24px;">Latihan Lagi</button>
-    <button class="retry-btn" id="resetHistBtn" style="margin-top:10px; border-color: var(--bad); color: var(--bad);">Hapus Riwayat</button>
+    <button class="retry-btn" id="resetHistBtn" style="margin-top:10px; border-color: var(--bad); color: var(--bad);">Hapus Riwayat Modul Ini</button>
+    <button class="link-btn" id="backModuleBtn2">← Ganti Modul</button>
   `;
   document.getElementById('newSessionBtn').onclick = renderSetup;
+  document.getElementById('backModuleBtn2').onclick = renderModuleSelect;
   document.getElementById('resetHistBtn').onclick = ()=>{
-    if(confirm('Hapus seluruh riwayat monitoring latihan? Tindakan ini tidak dapat dibatalkan.')){
+    if(confirm('Hapus seluruh riwayat monitoring latihan untuk modul ini? Tindakan ini tidak dapat dibatalkan.')){
       clearHistory();
       renderHistory();
     }
   };
 }
 
-renderSetup();
+renderModuleSelect();
 </script>
 </body>
 </html>
