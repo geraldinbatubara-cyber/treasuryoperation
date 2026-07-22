@@ -310,6 +310,93 @@
   }
   .retry-btn:hover{ background: rgba(18,44,49,0.06); }
 
+  .history-btn{
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    border:none;
+    background:transparent;
+    font-size:13px;
+    font-weight:600;
+    color: var(--brass-deep);
+    cursor:pointer;
+    text-decoration: underline;
+    text-underline-offset:3px;
+  }
+  .history-btn:hover{ color: #7A5D2F; }
+
+  .link-btn{
+    width:100%;
+    margin-top:14px;
+    padding:10px;
+    border:none;
+    background:transparent;
+    font-size:12.5px;
+    color: rgba(18,44,49,0.5);
+    cursor:pointer;
+    text-decoration: underline;
+    text-underline-offset:3px;
+  }
+
+  .empty-state{
+    text-align:center;
+    font-size:13.5px;
+    color: rgba(18,44,49,0.6);
+    padding: 30px 10px;
+    line-height:1.6;
+  }
+
+  .hist-row{
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hist-row:last-child{ border-bottom:none; }
+  .hist-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+    gap:10px;
+  }
+  .hist-bab{
+    font-size:13.5px;
+    font-weight:600;
+  }
+  .hist-pct{
+    font-family: Georgia, serif;
+    font-weight:700;
+    font-size:13px;
+    color: var(--brass-deep);
+    white-space:nowrap;
+  }
+  .hist-pct.dim-pct{
+    color: rgba(18,44,49,0.35);
+    font-family: inherit;
+    font-weight:400;
+    font-style:italic;
+  }
+  .hist-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:8px;
+    font-size:11.5px;
+    color: rgba(18,44,49,0.5);
+    gap:12px;
+  }
+  .spark{
+    display:flex;
+    align-items:flex-end;
+    gap:2px;
+    height:32px;
+  }
+  .spark-bar{
+    width:5px;
+    background: var(--brass);
+    border-radius:1px;
+    opacity:0.85;
+  }
+
   @media (max-width:480px){
     .sheet{ padding:26px 20px 22px 20px; }
     .question-text{ font-size:17px; }
@@ -457,7 +544,175 @@ const BANK = [
 
 {bab:"Bab 6 — Monitoring dan Evaluasi", q:"Spending Review yang dilakukan pada awal tahun anggaran berjalan untuk mengidentifikasi potensi ruang fiskal tahun anggaran berikutnya termasuk dalam kategori:",
   opts:["Spending Review Tematik","Spending Review Umum","Spending Review Wilayah khusus","Spending Review Akhir Tahun"], ans:1,
-  exp:"Spending Review Umum dilakukan pada awal tahun anggaran berjalan atas belanja pemerintah untuk mengidentifikasi potensi ruang fiskal tahun anggaran berikutnya, salah satunya melalui Spending Review Wilayah."}
+  exp:"Spending Review Umum dilakukan pada awal tahun anggaran berjalan atas belanja pemerintah untuk mengidentifikasi potensi ruang fiskal tahun anggaran berikutnya, salah satunya melalui Spending Review Wilayah."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Konsolidasi JF PK APBN dan JF APK APBN menjadi satu jabatan fungsional baru yang direncanakan implementasi penuhnya mulai tahun 2026 disebut:",
+  opts:["JF Analis Anggaran","JF Pengawas Keuangan Negara (PKN)","JF Auditor Keuangan Negara","JF Pranata Perbendaharaan"], ans:1,
+  exp:"JF PK APBN dan JF APK APBN dikonsolidasikan menjadi JF Pengawas Keuangan Negara (JF PKN), dengan implementasi penuh direncanakan mulai tahun 2026."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Jabatan Fungsional Pranata Keuangan APBN (PK APBN) termasuk dalam kategori:",
+  opts:["Kategori Keahlian","Kategori Keterampilan","Kategori Manajerial","Kategori Struktural"], ans:1,
+  exp:"PK APBN termasuk Kategori Keterampilan dengan jenjang Terampil, Mahir, dan Penyelia; sedangkan APK APBN termasuk Kategori Keahlian dengan jenjang Ahli Pertama, Ahli Muda, dan Ahli Madya."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Batas Usia Pensiun (BUP) untuk pejabat fungsional APK APBN jenjang Ahli Madya adalah:",
+  opts:["56 tahun","58 tahun","60 tahun","65 tahun"], ans:2,
+  exp:"BUP untuk APK APBN jenjang Ahli Madya (IV/a–IV/c) adalah 60 tahun, lebih tinggi dibanding jenjang Ahli Pertama dan Ahli Muda yang BUP-nya 58 tahun."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Persyaratan ijazah minimal untuk pengangkatan pertama ke dalam JF APK APBN adalah:",
+  opts:["SMA/sederajat","D3","D4/S1","S2"], ans:2,
+  exp:"Pengangkatan pertama ke JF APK APBN mensyaratkan ijazah paling rendah D4/S1, sedangkan untuk JF PK APBN cukup D3."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Mekanisme pengangkatan ke dalam jabatan fungsional yang berasal dari rekrutmen CPNS disebut:",
+  opts:["Perpindahan dari jabatan lain","Penyesuaian (Inpassing)","Pengangkatan pertama","Promosi"], ans:2,
+  exp:"Pengangkatan pertama merujuk pada pengangkatan ke JF yang berasal dari rekrutmen CPNS, untuk mengisi jenjang terampil, ahli pertama, dan ahli muda."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Batas usia maksimal untuk pengangkatan melalui mekanisme perpindahan dari jabatan lain ke JF APK APBN Ahli Madya adalah:",
+  opts:["50 tahun","53 tahun","55 tahun","58 tahun"], ans:2,
+  exp:"Batas usia paling tinggi untuk perpindahan dari jabatan lain adalah 53 tahun (JF PK APBN semua jenjang, APK APBN Ahli Pertama dan Ahli Muda) dan 55 tahun untuk JF APK APBN Ahli Madya."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Perpindahan dari Jabatan Pengawas ke JF APK APBN Ahli Muda merupakan contoh mekanisme:",
+  opts:["Inpassing","Penyetaraan jabatan/delayering","Pengangkatan pertama","Mutasi antar instansi"], ans:1,
+  exp:"Penyetaraan jabatan/delayering mencakup perubahan Jabatan Administrator ke APK APBN Ahli Madya, Jabatan Pengawas ke APK APBN Ahli Muda, dan Jabatan Pelaksana eselon V ke APK APBN Ahli Pertama."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Salah satu syarat promosi kenaikan jenjang jabatan fungsional PK APBN/APK APBN adalah memiliki predikat kinerja paling rendah baik dalam:",
+  opts:["6 bulan terakhir","1 tahun terakhir","2 tahun terakhir","3 tahun terakhir"], ans:1,
+  exp:"Untuk kenaikan jenjang (perpindahan vertikal), disyaratkan predikat kinerja paling rendah baik dalam 1 tahun terakhir, di samping pemenuhan Angka Kredit kumulatif dan kelulusan uji kompetensi."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Bentuk komitmen berupa kontrak dengan nilai paling banyak Rp10.000.000 dan diterbitkan langsung oleh penyedia adalah:",
+  opts:["Kuitansi","Bukti Pembelian/Pembayaran","Surat Perintah Kerja","Surat Perjanjian"], ans:1,
+  exp:"Bukti Pembelian/Pembayaran bernilai paling banyak Rp10.000.000 dan diterbitkan oleh penyedia, tanpa perlu ditandatangani PPK."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Batas waktu bagi PPK untuk mendaftarkan data kontrak dan supplier ke KPPN setelah kontrak ditandatangani adalah:",
+  opts:["3 hari kerja","5 hari kerja","7 hari kerja","14 hari kerja"], ans:1,
+  exp:"PPK melakukan pendaftaran data kontrak dan supplier ke KPPN maksimal 5 hari kerja setelah kontrak ditandatangani; jika terlambat, wajib melampirkan surat pernyataan KPA."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Dalam klasifikasi tipe supplier SPAN, transaksi belanja transfer daerah yang dibayarkan kepada satu/beberapa penerima termasuk tipe supplier:",
+  opts:["Tipe 1 — Satker","Tipe 3 — Pegawai","Tipe 5 — Transfer Daerah","Tipe 7 — Lain-lain"], ans:2,
+  exp:"Tipe supplier 5 (Transfer Daerah) digunakan untuk transaksi belanja transfer daerah yang dibayarkan kepada satu atau beberapa penerima."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Rekening Penampungan Akhir Tahun Anggaran (RPATA) merupakan rekening lain-lain milik:",
+  opts:["Kementerian/Lembaga","Bendahara Umum Negara (BUN)","Kantor Wilayah DJPb","Penyedia Barang/Jasa"], ans:1,
+  exp:"RPATA merupakan rekening lain-lain milik BUN yang digunakan untuk menampung dana atas penyelesaian pekerjaan yang belum dapat dibayarkan hingga akhir tahun anggaran."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Bentuk komitmen kontrak untuk jasa konsultasi dengan nilai paling banyak Rp100.000.000, yang diterbitkan dan ditandatangani oleh PPK dan Penyedia, adalah:",
+  opts:["Bukti Pembelian/Pembayaran","Kuitansi","Surat Perintah Kerja (SPK)","Surat/Bukti Pesanan"], ans:2,
+  exp:"Surat Perintah Kerja (SPK) digunakan antara lain untuk jasa konsultasi paling banyak Rp100.000.000, PBJ lainnya di atas Rp50 juta s.d. Rp200 juta, dan pekerjaan konstruksi paling banyak Rp400 juta."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Data supplier tipe 3 (Pegawai) digunakan untuk transaksi:",
+  opts:["Pembayaran kepada penyedia barang/jasa pihak ketiga","Belanja pegawai yang dibayarkan kepada pegawai Satuan Kerja pengaju tagihan","Transaksi pengelolaan BA BUN","Transaksi penerusan pinjaman"], ans:1,
+  exp:"Tipe supplier 3 (Pegawai) digunakan untuk transaksi belanja pegawai yang dibayarkan kepada satu/beberapa penerima yang merupakan pegawai dari Satker yang mengajukan tagihan."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Komitmen berupa Surat/Bukti Pesanan digunakan khusus untuk pengadaan barang/jasa melalui:",
+  opts:["Tender terbuka","E-purchasing","Penunjukan langsung konvensional","Swakelola"], ans:1,
+  exp:"Surat/Bukti Pesanan diterbitkan oleh PPK kepada penyedia khusus untuk pengadaan barang/jasa yang dilakukan melalui mekanisme E-purchasing."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Setelah pemberian MP PNBP secara progresif (maksimal) sejak Oktober 2021 hingga Oktober 2023 menimbulkan dampak negatif, dampak yang dimaksud adalah:",
+  opts:["Keterlambatan penyaluran gaji pegawai","Kelebihan belanja sumber dana PNBP karena realisasi setoran lebih kecil dari realisasi belanja","Penurunan jumlah satker PNBP","Peningkatan tunggakan pembayaran ke penyedia"], ans:1,
+  exp:"Pemberian MP PNBP secara progresif/maksimal menyebabkan kelebihan belanja sumber dana PNBP karena realisasi setoran/MP Riil lebih kecil dibandingkan realisasi belanja, sehingga dilakukan langkah mitigasi dan penyempurnaan formula."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Perubahan Penetapan MP PNBP dapat diajukan dalam hal terjadi, kecuali:",
+  opts:["Perubahan target PNBP dalam DIPA","Perubahan pagu sumber dana PNBP dalam DIPA","Kenaikan pangkat pegawai satker","Pengembalian setoran PNBP pada tahun anggaran berjalan"], ans:2,
+  exp:"Perubahan MP PNBP dapat diajukan karena perubahan target/pagu/proyeksi PNBP, perubahan izin penggunaan dana, atau pengembalian setoran; kenaikan pangkat pegawai tidak relevan dengan penetapan MP PNBP."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Salah satu indikator yang menjadi pertimbangan dalam penetapan besaran MP PNBP adalah:",
+  opts:["Jumlah pegawai satker","Proyeksi setoran PNBP dan belanja sumber dana PNBP tahun anggaran berjalan","Lokasi kantor satker","Jenjang jabatan KPA"], ans:1,
+  exp:"Salah satu indikator penetapan MP PNBP adalah proyeksi setoran dan belanja sumber dana PNBP tahun anggaran berjalan, di samping realisasi tahun berjalan/sebelumnya dan rencana pelaksanaan program."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Siklus hibah secara umum meliputi lima tahapan, yaitu:",
+  opts:["Perencanaan, negosiasi, pencairan, audit, pelaporan","Perencanaan, perundingan/penandatanganan, penganggaran, pelaksanaan, pertanggungjawaban","Pengajuan, verifikasi, persetujuan, pencairan, evaluasi","Registrasi, validasi, otorisasi, pencairan, pelaporan"], ans:1,
+  exp:"Siklus hibah meliputi: (a) perencanaan; (b) perundingan/penandatanganan; (c) penganggaran; (d) pelaksanaan; dan (e) pertanggungjawaban."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Untuk hibah langsung luar negeri, konsultasi substansi dan peruntukan hibah sebelum penandatanganan perjanjian wajib disampaikan kepada Menteri Keuangan c.q.:",
+  opts:["Direktorat Jenderal Anggaran","DJPPR","Direktorat Jenderal Perbendaharaan Pusat","Badan Pemeriksa Keuangan"], ans:1,
+  exp:"Untuk hibah langsung luar negeri, konsultasi dilakukan kepada Menteri Keuangan c.q. DJPPR; sedangkan untuk hibah langsung dalam negeri, konsultasi dilakukan kepada Kantor Wilayah DJPb mitra kerja."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Dalam siklus hibah langsung, tahap perencanaan tidak melibatkan proses perencanaan dari Kementerian PPN/Bappenas karena:",
+  opts:["Hibah langsung selalu berjumlah kecil","Perencanaan hibah langsung berupa negosiasi langsung antara calon pemberi dan calon penerima hibah","Hibah langsung tidak memerlukan register","Hibah langsung hanya untuk barang/jasa"], ans:1,
+  exp:"Perencanaan pada hibah langsung lebih berupa proses negosiasi/perundingan antara calon pemberi hibah dengan calon penerima hibah (satker K/L), bukan melalui mekanisme perencanaan Bappenas."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Laporan triwulan mengenai pelaksanaan kegiatan yang dibiayai dari hibah ke daerah wajib disampaikan oleh gubernur/bupati/walikota kepada:",
+  opts:["DPRD setempat","Menteri Keuangan dan menteri/pimpinan lembaga pemerintah non kementerian terkait","Badan Pemeriksa Keuangan saja","Direktur Jenderal Perbendaharaan saja"], ans:1,
+  exp:"Gubernur/bupati/walikota wajib menyampaikan laporan triwulan pelaksanaan kegiatan yang dibiayai hibah kepada Menteri Keuangan dan menteri/pimpinan lembaga pemerintah non kementerian terkait, sebagai dasar pemantauan dan evaluasi."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Menurut Peraturan Pemerintah Nomor 10 Tahun 2011, salah satu prinsip yang harus dipenuhi dalam penerimaan hibah adalah:",
+  opts:["Dapat disertai ikatan politik tertentu","Tidak memiliki muatan yang mengganggu stabilitas keamanan negara","Wajib dibayar kembali dalam waktu 5 tahun","Hanya boleh dari lembaga multilateral"], ans:1,
+  exp:"Prinsip penerimaan hibah antara lain: transparan, akuntabel, efisien dan efektif, kehati-hatian, tidak disertai ikatan politik, dan tidak memiliki muatan yang mengganggu stabilitas keamanan negara."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DBH yang diberikan kepada daerah non penghasil bertujuan untuk mengatasi eksternalitas dan/atau:",
+  opts:["Mengurangi jumlah penduduk miskin","Mendorong pemerataan pembangunan dalam satu wilayah","Meningkatkan jumlah PNS daerah","Menambah aset tetap pemerintah pusat"], ans:1,
+  exp:"DBH disalurkan kepada daerah non penghasil sebagai upaya mengatasi dampak negatif (eksternalitas) dan/atau mendorong pemerataan pembangunan dalam satu wilayah."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DBH Cukai Hasil Tembakau (CHT) diarahkan dengan prioritas pada bidang:",
+  opts:["Infrastruktur jalan tol","Kesehatan dan pemulihan ekonomi daerah","Pendidikan tinggi","Pertahanan keamanan"], ans:1,
+  exp:"DBH Cukai Hasil Tembakau diarahkan untuk program sesuai peraturan mengenai cukai, dengan prioritas pada bidang kesehatan dan pemulihan ekonomi daerah."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DAK Fisik ditujukan untuk mendukung pembiayaan kegiatan fisik yang menjadi tanggung jawab pemerintah daerah dengan tetap mengacu pada:",
+  opts:["Kebijakan otonomi khusus daerah","Program prioritas nasional","Kebijakan Bank Indonesia","Perjanjian internasional"], ans:1,
+  exp:"DAK Fisik terdiri dari bidang/subbidang/tema tertentu dan digunakan untuk mendukung pembiayaan kegiatan fisik daerah dengan tetap mengacu pada program prioritas nasional."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Rancangan arah kebijakan DAK Fisik disusun bersama oleh DJPK dan:",
+  opts:["Kementerian Dalam Negeri","BAPPENAS","Badan Pemeriksa Keuangan","Kementerian Sekretariat Negara"], ans:1,
+  exp:"Perencanaan dan penganggaran DAK Fisik dilakukan secara terkoordinasi antara DJPK (Kemenkeu) dan Kementerian PPN/BAPPENAS, mengacu pada RPJMN dan arahan Presiden."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DAK Non Fisik yang digunakan untuk mendukung biaya operasional non personalia satuan pendidikan disebut:",
+  opts:["Dana BOK","Dana BOSP","Dana Insentif Fiskal","Dana Otsus Pendidikan"], ans:1,
+  exp:"Dana Bantuan Operasional Satuan Pendidikan (BOSP) merupakan bagian DAK Non Fisik yang terdiri dari Dana BOS, Dana BOP PAUD, dan Dana BOP Pendidikan Kesetaraan."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana BOS untuk satuan pendidikan menengah negeri (setingkat SMA/SMK/SLB) merupakan kewenangan:",
+  opts:["Pemerintah pusat","Pemerintah provinsi","Pemerintah kabupaten/kota","Pemerintah desa"], ans:1,
+  exp:"Dana BOS provinsi ditujukan untuk satuan pendidikan menengah negeri/swasta dan satuan pendidikan khusus negeri/swasta (setingkat SMA, SMK, atau SLB), sedangkan Dana BOS kabupaten/kota untuk pendidikan dasar (SD/SMP)."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana Desa yang penggunaannya ditentukan untuk hal tertentu seperti BLT Desa, ketahanan pangan, dan desa digital disebut Dana Desa:",
+  opts:["Non-Earmarked","Earmarked","Block Grant","Reguler"], ans:1,
+  exp:"Dana Desa Earmarked adalah dana desa yang penggunaannya ditentukan untuk hal-hal tertentu seperti BLT Desa, adaptasi perubahan iklim, kesehatan/stunting, ketahanan pangan, dan desa digital."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Persentase maksimal penggunaan Dana Desa untuk operasional pemerintah desa adalah:",
+  opts:["3%","5%","10%","15%"], ans:0,
+  exp:"Dana Desa dapat digunakan untuk operasional pemerintah desa paling tinggi 3%, sementara BLT Desa untuk penanganan kemiskinan ekstrem paling tinggi 15%."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana Insentif Fiskal bersifat sebagai:",
+  opts:["Pinjaman yang harus dikembalikan","Reward atas capaian kinerja daerah","Dana wajib untuk seluruh daerah","Subsidi bunga kredit daerah"], ans:1,
+  exp:"Dana Insentif Fiskal merupakan bentuk penghargaan (reward) dari pemerintah pusat kepada daerah atas keberhasilan pencapaian kinerja tertentu, bukan dana wajib atau pinjaman."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana Insentif Fiskal tidak dapat digunakan untuk mendanai, kecuali:",
+  opts:["Dukungan infrastruktur pelayanan publik","Gaji, tambahan penghasilan, dan honorarium","Perjalanan dinas","Peningkatan perekonomian"], ans:0,
+  exp:"Dana Insentif Fiskal tidak dapat digunakan untuk gaji/tambahan penghasilan/honorarium dan perjalanan dinas; sebaliknya dapat digunakan untuk dukungan infrastruktur pelayanan publik, peningkatan perekonomian, kesehatan, dan pendidikan."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Selain Papua, provinsi yang memperoleh status Otonomi Khusus berdasarkan tindak lanjut Perjanjian Helsinki 2005 adalah:",
+  opts:["Aceh","Yogyakarta","Nusa Tenggara Timur","Maluku"], ans:0,
+  exp:"Provinsi Aceh memperoleh status Otonomi Khusus berdasarkan UU Nomor 11 Tahun 2006 tentang Pemerintahan Aceh, sebagai tindak lanjut dari Perjanjian Helsinki tahun 2005."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana Tambahan Infrastruktur (DTI) dalam kerangka Dana Otonomi Khusus dialokasikan khusus untuk:",
+  opts:["Provinsi-provinsi di wilayah Papua","Provinsi Aceh","Seluruh provinsi di Indonesia","Kabupaten/kota penghasil migas"], ans:0,
+  exp:"Dana Tambahan Infrastruktur (DTI) dialokasikan bagi provinsi-provinsi di wilayah Papua untuk membiayai pembangunan infrastruktur perhubungan, energi listrik, air bersih, telekomunikasi, dan sanitasi."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Indikator Penyerapan Anggaran dalam IKPA memiliki bobot sebesar:",
+  opts:["10%","15%","20%","25%"], ans:2,
+  exp:"Indikator Penyerapan Anggaran memiliki bobot 20% dan digunakan mengukur kesesuaian eksekusi belanja dengan target penyerapan anggaran pada setiap triwulan."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Target penyerapan anggaran triwulan I untuk jenis Belanja Modal adalah:",
+  opts:["10%","15%","20%","25%"], ans:0,
+  exp:"Target penyerapan anggaran triwulanan Belanja Modal adalah 10% (Tw I), 40% (Tw II), 70% (Tw III), dan 90% (Tw IV), berbeda dengan Belanja Pegawai/Barang/Bansos."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Satker yang tidak termasuk dalam objek penilaian kinerja indikator Penyerapan Anggaran IKPA adalah:",
+  opts:["Satker Kantor Pusat","Satker BLU","Satker Kantor Daerah","Satker Dekonsentrasi"], ans:1,
+  exp:"Satker Badan Layanan Umum (BLU) tidak termasuk dalam objek penilaian kinerja indikator Penyerapan Anggaran karena karakteristik fleksibilitas keuangannya berbeda dari satker pada umumnya."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Indikator Belanja Kontraktual dalam IKPA memiliki bobot dan terdiri dari tiga komponen, yaitu:",
+  opts:["Bobot 20%: akselerasi kontrak dini, akselerasi belanja modal, distribusi akselerasi kontrak","Bobot 10%: akselerasi kontrak dini, akselerasi belanja modal, distribusi akselerasi kontrak","Bobot 15%: revisi DIPA, deviasi halaman III, capaian output","Bobot 25%: ketepatan waktu, capaian RO, dispensasi SPM"], ans:1,
+  exp:"Indikator Belanja Kontraktual berbobot 10%, terdiri dari komponen Akselerasi Kontrak Dini (40%), Akselerasi Belanja Modal (40%), dan Distribusi Akselerasi Kontrak (20%)."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Indikator Dispensasi SPM dalam IKPA berfungsi sebagai:",
+  opts:["Penambah nilai kinerja secara bertingkat","Pengurang nilai kinerja secara bertingkat","Indikator tunggal tanpa bobot","Syarat penetapan MP PNBP"], ans:1,
+  exp:"Indikator Dispensasi SPM mengukur kepatuhan penyampaian SPM sesuai batas waktu di akhir tahun anggaran, dan berfungsi sebagai pengurang nilai IKPA secara bertingkat sesuai kategori rasio dispensasi."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Indikator Capaian Output dalam IKPA memiliki bobot 25% yang terdiri dari dua komponen, yaitu:",
+  opts:["Ketepatan Waktu Penyampaian Data (30%) dan Capaian Rincian Output (70%)","Akselerasi Kontrak (50%) dan Distribusi Kontrak (50%)","Revisi DIPA (50%) dan Deviasi Halaman III (50%)","Penyerapan Triwulanan (100%)"], ans:0,
+  exp:"Capaian Output terdiri dari komponen Ketepatan Waktu Penyampaian Data (bobot 30%) dan Capaian Rincian Output/RO (bobot 70%)."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Dalam penilaian Capaian Rincian Output (RO), nilai kinerja hanya dihitung untuk RO dengan status:",
+  opts:["Terkonfirmasi dan Valid","Tidak Terkonfirmasi namun Valid","Terkonfirmasi namun Tidak Valid","Tidak Terkonfirmasi dan Tidak Valid"], ans:0,
+  exp:"RO yang dihitung nilai kinerjanya adalah RO dengan status 'Terkonfirmasi' dan 'Valid'; ketiga kombinasi status lainnya menghasilkan nilai 0."}
 ];
 
 let session = [];
@@ -465,6 +720,46 @@ let idx = 0;
 let score = 0;
 let answered = false;
 let babStats = {};
+
+const HISTORY_KEY = 'latihan_pa_history_v1';
+
+function loadHistory(){
+  try{
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+
+function saveAttempt(babStatsResult){
+  try{
+    const history = loadHistory();
+    history.push({
+      date: new Date().toISOString(),
+      babStats: babStatsResult
+    });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  }catch(e){ /* storage unavailable, skip silently */ }
+}
+
+function clearHistory(){
+  try{ localStorage.removeItem(HISTORY_KEY); }catch(e){}
+}
+
+function aggregateHistory(){
+  const history = loadHistory();
+  const agg = {};
+  history.forEach(attempt=>{
+    Object.keys(attempt.babStats).forEach(bab=>{
+      if(!agg[bab]) agg[bab] = {correct:0, total:0, attempts:0, trend:[]};
+      const s = attempt.babStats[bab];
+      agg[bab].correct += s.correct;
+      agg[bab].total += s.total;
+      agg[bab].attempts += 1;
+      agg[bab].trend.push(Math.round((s.correct/s.total)*100));
+    });
+  });
+  return {agg, sessionCount: history.length, lastDate: history.length ? history[history.length-1].date : null};
+}
 
 function shuffle(arr){
   const a = arr.slice();
@@ -495,6 +790,7 @@ function renderSetup(){
       <div class="chip" data-v="6">Bab 6</div>
     </div>
     <button class="start-btn" id="startBtn">Mulai Latihan</button>
+    <button class="link-btn" id="viewHistoryBtn">Lihat Monitoring Riwayat Latihan</button>
   `;
   let count = 20, scope = 'all';
   document.querySelectorAll('#countRow .chip').forEach(c=>{
@@ -511,6 +807,7 @@ function renderSetup(){
       scope = c.dataset.v;
     };
   });
+  document.getElementById('viewHistoryBtn').onclick = renderHistory;
   document.getElementById('startBtn').onclick = ()=>{
     let pool = BANK;
     if(scope !== 'all'){
@@ -581,6 +878,7 @@ function selectOption(i){
 }
 
 function renderResults(){
+  saveAttempt(babStats);
   const sheet = document.getElementById('sheet');
   const pctScore = Math.round((score/session.length)*100);
   let babRows = '';
@@ -600,8 +898,73 @@ function renderResults(){
     <div class="result-sub">${pctScore}% jawaban benar</div>
     ${babRows}
     <button class="retry-btn" id="retryBtn">Latihan Lagi</button>
+    <button class="history-btn" id="historyBtn">Lihat Monitoring Riwayat</button>
   `;
   document.getElementById('retryBtn').onclick = renderSetup;
+  document.getElementById('historyBtn').onclick = renderHistory;
+}
+
+function renderHistory(){
+  const sheet = document.getElementById('sheet');
+  const {agg, sessionCount, lastDate} = aggregateHistory();
+  const babOrder = ["Bab 1 — Pejabat Perbendaharaan","Bab 2 — Mekanisme Pembayaran APBN","Bab 3 — Maksimum Pencairan PNBP","Bab 4 — Pengelolaan Hibah","Bab 5 — Transfer ke Daerah","Bab 6 — Monitoring dan Evaluasi"];
+
+  if(sessionCount === 0){
+    sheet.innerHTML = `
+      <div class="field-label" style="text-align:center;margin-top:0;">Monitoring Riwayat Latihan</div>
+      <div class="empty-state">Belum ada riwayat latihan tersimpan. Riwayat akan tercatat otomatis setiap kali kamu menyelesaikan satu sesi latihan.</div>
+      <button class="retry-btn" id="backBtn">Mulai Latihan</button>
+    `;
+    document.getElementById('backBtn').onclick = renderSetup;
+    return;
+  }
+
+  let rows = '';
+  babOrder.forEach(bab=>{
+    const s = agg[bab];
+    const label = bab.replace(/^Bab \d+ — /,'');
+    const babNum = bab.match(/Bab (\d+)/)[1];
+    if(!s){
+      rows += `
+        <div class="hist-row">
+          <div class="hist-top"><span class="hist-bab">Bab ${babNum} · ${label}</span><span class="hist-pct dim-pct">belum dicoba</span></div>
+          <div class="bab-bar-track"><div class="bab-bar-fill" style="width:0%"></div></div>
+        </div>`;
+      return;
+    }
+    const pctAvg = Math.round((s.correct/s.total)*100);
+    const lastN = s.trend.slice(-8);
+    const sparkline = lastN.map((v,i)=>`<div class="spark-bar" style="height:${Math.max(6,v*0.32)}px" title="${v}%"></div>`).join('');
+    rows += `
+      <div class="hist-row">
+        <div class="hist-top">
+          <span class="hist-bab">Bab ${babNum} · ${label}</span>
+          <span class="hist-pct">${pctAvg}% rata-rata</span>
+        </div>
+        <div class="bab-bar-track"><div class="bab-bar-fill" style="width:${pctAvg}%"></div></div>
+        <div class="hist-meta">
+          <span>${s.attempts}x dikerjakan · ${s.correct}/${s.total} jawaban benar kumulatif</span>
+          <div class="spark">${sparkline}</div>
+        </div>
+      </div>`;
+  });
+
+  const lastDateLabel = lastDate ? new Date(lastDate).toLocaleString('id-ID', {dateStyle:'medium', timeStyle:'short'}) : '-';
+
+  sheet.innerHTML = `
+    <div class="field-label" style="text-align:center;margin-top:0;">Monitoring Riwayat Latihan</div>
+    <div class="result-sub" style="margin-bottom:22px;">${sessionCount} sesi tercatat · Terakhir: ${lastDateLabel}</div>
+    ${rows}
+    <button class="start-btn" id="newSessionBtn" style="margin-top:24px;">Latihan Lagi</button>
+    <button class="retry-btn" id="resetHistBtn" style="margin-top:10px; border-color: var(--bad); color: var(--bad);">Hapus Riwayat</button>
+  `;
+  document.getElementById('newSessionBtn').onclick = renderSetup;
+  document.getElementById('resetHistBtn').onclick = ()=>{
+    if(confirm('Hapus seluruh riwayat monitoring latihan? Tindakan ini tidak dapat dibatalkan.')){
+      clearHistory();
+      renderHistory();
+    }
+  };
 }
 
 renderSetup();
