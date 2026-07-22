@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Asesmen — Pelaksanaan Anggaran</title>
+<style>
+  :root{
+    --ink:#122C31;
+    --paper:#F1EEE3;
+    --paper-dim:#E7E3D5;
+    --brass:#AD8A4E;
+    --brass-deep:#8B6D38;
+    --good:#3E6B52;
+    --bad:#A2403F;
+    --line: rgba(18,44,49,0.16);
+    --shadow: 0 18px 40px -18px rgba(18,44,49,0.45);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(173,138,78,0.18), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(173,138,78,0.10), transparent 45%);
+    min-height:100vh;
+    font-family: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 40px 16px;
+  }
+  .stage{
+    width:100%;
+    max-width:640px;
+  }
+  .masthead{
+    text-align:center;
+    margin-bottom:22px;
+    color: var(--paper);
+  }
+  .masthead .eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color: rgba(241,238,227,0.62);
+    margin-bottom:8px;
+  }
+  .masthead h1{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight:700;
+    font-size: clamp(24px, 5vw, 32px);
+    margin:0 0 6px 0;
+    letter-spacing:0.01em;
+  }
+  .masthead p{
+    margin:0;
+    font-size:13.5px;
+    color: rgba(241,238,227,0.55);
+  }
+
+  .sheet{
+    position:relative;
+    background: var(--paper);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+    padding: 34px 32px 28px 32px;
+    border: 1px solid rgba(18,44,49,0.08);
+  }
+  .sheet::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:6px;
+    background: repeating-linear-gradient(90deg, var(--brass) 0 14px, transparent 14px 24px);
+    opacity:0.55;
+  }
+
+  /* ---- Perforated tear edge at bottom ---- */
+  .tear{
+    height:14px;
+    background:
+      radial-gradient(circle at 10px 0, transparent 7px, var(--ink) 7px) top left/20px 14px repeat-x;
+    margin-top:-1px;
+  }
+
+  /* ---- Setup screen ---- */
+  .field-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    color: rgba(18,44,49,0.55);
+    margin: 18px 0 8px 0;
+    font-weight:600;
+  }
+  .field-label:first-of-type{ margin-top:2px; }
+  .choice-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    border:1.5px solid var(--line);
+    background: rgba(255,255,255,0.35);
+    padding:9px 14px;
+    border-radius:20px;
+    font-size:13.5px;
+    cursor:pointer;
+    transition: all .15s ease;
+    color: var(--ink);
+  }
+  .chip:hover{ border-color: var(--brass); }
+  .chip.active{
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  .start-btn{
+    margin-top:26px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:3px;
+    background: var(--brass-deep);
+    color: var(--paper);
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.03em;
+    cursor:pointer;
+    transition: transform .12s ease, background .15s ease;
+  }
+  .start-btn:hover{ background:#7A5D2F; transform: translateY(-1px); }
+  .start-btn:active{ transform: translateY(0); }
+
+  /* ---- Quiz header ---- */
+  .quiz-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 6px;
+  }
+  .bab-tag{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color: var(--brass-deep);
+    font-weight:700;
+  }
+  .counter{
+    font-family: Georgia, serif;
+    font-size:13px;
+    color: rgba(18,44,49,0.55);
+  }
+  .progress-track{
+    height:4px;
+    background: var(--paper-dim);
+    border-radius:2px;
+    overflow:hidden;
+    margin: 10px 0 26px 0;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--brass);
+    transition: width .3s ease;
+  }
+
+  .question-text{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height:1.5;
+    margin: 0 0 22px 0;
+  }
+
+  .option{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    width:100%;
+    text-align:left;
+    padding:14px 16px;
+    margin-bottom:10px;
+    border:1.5px solid var(--line);
+    background: rgba(255,255,255,0.3);
+    border-radius:3px;
+    font-size:14.5px;
+    line-height:1.45;
+    cursor:pointer;
+    color: var(--ink);
+    transition: border-color .12s ease, background .12s ease;
+  }
+  .option:hover:not(.locked){ border-color: var(--brass); background: rgba(255,255,255,0.55); }
+  .option .letter{
+    flex:0 0 auto;
+    width:24px; height:24px;
+    border-radius:50%;
+    border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700;
+    font-family: Georgia, serif;
+  }
+  .option.correct{
+    border-color: var(--good);
+    background: rgba(62,107,82,0.12);
+  }
+  .option.correct .letter{ background: var(--good); border-color: var(--good); color:#fff; }
+  .option.wrong{
+    border-color: var(--bad);
+    background: rgba(162,64,63,0.10);
+  }
+  .option.wrong .letter{ background: var(--bad); border-color: var(--bad); color:#fff; }
+  .option.dim{ opacity:0.55; }
+
+  .stamp{
+    display:inline-block;
+    margin: 4px 0 16px 0;
+    padding: 5px 16px;
+    border: 2.5px solid;
+    border-radius: 4px;
+    transform: rotate(-3deg);
+    font-family: Georgia, serif;
+    font-weight:700;
+    letter-spacing:0.12em;
+    font-size:13px;
+    text-transform:uppercase;
+  }
+  .stamp.good{ color: var(--good); border-color: var(--good); }
+  .stamp.bad{ color: var(--bad); border-color: var(--bad); }
+
+  .explain{
+    font-size:13.5px;
+    line-height:1.55;
+    color: rgba(18,44,49,0.78);
+    background: var(--paper-dim);
+    border-left: 3px solid var(--brass);
+    padding: 12px 14px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    display:none;
+  }
+  .explain.show{ display:block; }
+
+  .next-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:3px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    display:none;
+  }
+  .next-btn.show{ display:block; }
+  .next-btn:hover{ background:#0A1E22; }
+
+  /* ---- Results ---- */
+  .result-score{
+    text-align:center;
+    font-family: Georgia, serif;
+    font-size: 52px;
+    font-weight:700;
+    margin: 6px 0 2px 0;
+  }
+  .result-sub{
+    text-align:center;
+    font-size:13.5px;
+    color: rgba(18,44,49,0.6);
+    margin-bottom:26px;
+  }
+  .bab-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size:13.5px;
+  }
+  .bab-row:last-child{ border-bottom:none; }
+  .bab-bar-track{
+    flex:1;
+    height:6px;
+    background: var(--paper-dim);
+    border-radius:3px;
+    margin: 0 12px;
+    overflow:hidden;
+  }
+  .bab-bar-fill{
+    height:100%;
+    background: var(--brass);
+  }
+  .bab-score{
+    font-family: Georgia, serif;
+    font-weight:700;
+    width:44px;
+    text-align:right;
+  }
+  .retry-btn{
+    width:100%;
+    margin-top:24px;
+    padding:14px;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    border-radius:3px;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    color: var(--ink);
+  }
+  .retry-btn:hover{ background: rgba(18,44,49,0.06); }
+
+  @media (max-width:480px){
+    .sheet{ padding:26px 20px 22px 20px; }
+    .question-text{ font-size:17px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="masthead">
+    <div class="eyebrow">Simulasi Asesmen Kemampuan Pegawai</div>
+    <h1>Latihan Soal · Pelaksanaan Anggaran</h1>
+    <p>Berdasarkan Modul Pelaksanaan Anggaran — Direktorat Jenderal Perbendaharaan</p>
+  </div>
+
+  <div class="sheet" id="sheet"></div>
+  <div class="tear"></div>
+</div>
+
+<script>
+const BANK = [
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Dalam struktur tata kelola keuangan negara, Menteri/Pimpinan Lembaga berperan sebagai Pengguna Anggaran (PA) yang merepresentasikan fungsi:",
+  opts:["Chief Financial Officer (CFO)","Chief Operating Officer (COO)","Kuasa Bendahara Umum Negara","Kepala Satuan Kerja"], ans:1,
+  exp:"Menteri Keuangan berperan sebagai CFO (pengelola fiskal), sedangkan Menteri/Pimpinan Lembaga berperan sebagai COO yang menjadi Pengguna Anggaran (PA)."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Berdasarkan ketentuan larangan perangkapan jabatan pejabat perbendaharaan yang berlaku saat ini, pernyataan yang benar adalah:",
+  opts:["PPK dapat dirangkap oleh PPSPM","Bendahara dapat dirangkap oleh KPA","KPA dapat merangkap sebagai PPK atau PPSPM, namun tidak boleh keduanya","PPSPM dapat dirangkap oleh Bendahara"], ans:2,
+  exp:"Sesuai PP 45/2013 jo. PP 50/2018: Bendahara tidak boleh dirangkap KPA/PPK/PPSPM; PPK tidak boleh dirangkap PPSPM; sedangkan PPK atau PPSPM dapat dirangkap KPA, tapi tidak boleh keduanya sekaligus."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Jabatan Kuasa Pengguna Anggaran (KPA) bersifat ex-officio, artinya:",
+  opts:["Ditetapkan melalui pemilihan oleh pegawai satker","Posisi ini melekat pada jabatan Kepala Satker","Diangkat langsung oleh Menteri Keuangan","Berlaku hanya untuk satu tahun anggaran"], ans:1,
+  exp:"KPA ditunjuk sebagai representasi PA di tingkat operasional dan jabatannya bersifat ex-officio, melekat pada jabatan Kepala Satuan Kerja (Satker)."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Yang bertugas menerbitkan Surat Perintah Membayar (SPM) setelah melakukan uji formal atas SPP adalah:",
+  opts:["Pejabat Pembuat Komitmen (PPK)","Bendahara Pengeluaran","Pejabat Penanda tangan SPM (PPSPM)","Kuasa Pengguna Anggaran (KPA)"], ans:2,
+  exp:"PPSPM berperan sebagai validator/penguji tagihan; setelah SPP dinyatakan sesuai, PPSPM menerbitkan SPM untuk diteruskan ke KPPN."},
+
+{bab:"Bab 1 — Pejabat Perbendaharaan", q:"Sertifikat kompetensi teknis bagi Bendahara dalam kerangka pejabat perbendaharaan disebut:",
+  opts:["PNT (PPK Negara Tersertifikasi)","SNT (PPSPM Negara Tersertifikasi)","BNT (Bendahara Negara Tersertifikasi)","ANT (Analis Negara Tersertifikasi)"], ans:2,
+  exp:"Standar Kompetensi Teknis dibuktikan dengan sertifikat: PNT untuk PPK, SNT untuk PPSPM, dan BNT untuk Bendahara."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Dokumen yang menjadi dasar bagi Kuasa BUN untuk melakukan pencairan dana APBN adalah:",
+  opts:["Rencana Kerja dan Anggaran (RKA)","Daftar Isian Pelaksanaan Anggaran (DIPA)","Surat Perintah Membayar (SPM)","Petunjuk Operasional Kegiatan (POK)"], ans:1,
+  exp:"DIPA digunakan oleh PA/KPA sebagai dasar pelaksanaan pembayaran dan digunakan oleh Kuasa BUN sebagai dasar pencairan dana."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Revisi DIPA yang bersifat memerlukan penelaahan, khususnya terkait efisiensi biaya per unit output, menjadi kewenangan:",
+  opts:["Direktorat Pelaksanaan Anggaran","Kantor Wilayah DJPb","Direktorat Jenderal Anggaran (DJA)","Kuasa Pengguna Anggaran (KPA)"], ans:2,
+  exp:"Revisi yang memerlukan penelaahan menjadi kewenangan DJA, sedangkan revisi di lingkup DJPb (Direktorat Pelaksanaan Anggaran/Kanwil) hanya bersifat pengesahan tanpa penelaahan."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Batas waktu maksimal bagi penyedia untuk mengajukan tagihan pembayaran sejak hak tagih kepada negara muncul adalah:",
+  opts:["3 hari kerja","5 hari kerja","7 hari kerja","10 hari kerja"], ans:1,
+  exp:"Penyedia wajib mengajukan tagihan paling lambat 5 hari kerja sejak hak tagih muncul; jika tidak, PPK wajib memberi pemberitahuan tertulis."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Mekanisme pembayaran yang menjadi prinsip utama untuk penerima hak pembayaran (penyedia, pegawai, dll.) adalah:",
+  opts:["Uang Persediaan (UP)","Tambahan Uang Persediaan (TUP)","Pembayaran Langsung (LS)","Rekening Penampungan Akhir Tahun"], ans:2,
+  exp:"Prinsip utama pembayaran tagihan dilakukan melalui mekanisme Pembayaran Langsung (LS) kepada penerima hak pembayaran."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Uang muka kerja yang diberikan Kuasa BUN kepada Bendahara Pengeluaran untuk membiayai kegiatan operasional sehari-hari yang tidak dapat dilakukan melalui mekanisme LS disebut:",
+  opts:["Tambahan Uang Persediaan (TUP)","Uang Persediaan (UP)","Rekening Penampungan Akhir Tahun (RPATA)","Dana Titipan"], ans:1,
+  exp:"UP adalah uang muka kerja untuk membiayai kegiatan operasional sehari-hari dan pengeluaran yang tidak dapat dilakukan melalui LS; TUP adalah penambahan UP untuk kondisi mendesak tertentu."},
+
+{bab:"Bab 2 — Mekanisme Pembayaran APBN", q:"Setelah SPM disetujui oleh Kepala Seksi PD/PDMS melalui sistem SPAN, tahap berikutnya dalam pencairan dana adalah:",
+  opts:["PPK menerbitkan SPP baru","Diproses melalui Payment Process Request (PPR) untuk penerbitan SP2D","Dikembalikan ke satker untuk revisi","PPSPM melakukan uji formal ulang"], ans:1,
+  exp:"SPM yang telah disetujui diproses oleh Direktorat Pengelolaan Kas Negara melalui PPR untuk penerbitan Surat Perintah Pencairan Dana (SP2D)."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Konsep 'Prefinancing' dalam penetapan MP PNBP yang berlaku sejak Oktober 2021 memungkinkan:",
+  opts:["Satker hanya boleh belanja setelah ada realisasi setoran PNBP","Satker dapat belanja sumber dana PNBP sebelum ada realisasi penerimaan PNBP","Satker wajib menyetorkan seluruh PNBP di akhir tahun","MP PNBP hanya dapat diajukan sekali dalam setahun"], ans:1,
+  exp:"Melalui PMK 110/PMK.05/2021, konsep Prefinancing memungkinkan K/L melakukan belanja sumber dana PNBP sebelum memiliki realisasi penerimaan PNBP, untuk mempercepat kualitas belanja."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"MP PNBP Reguler Tahap I dapat diajukan paling cepat pada bulan dan dengan besaran maksimal:",
+  opts:["Januari, 60%","Juli, 80%","Oktober, 100%","Maret, 50%"], ans:0,
+  exp:"MP PNBP Tahap I paling besar 60% dari pagu DIPA sumber dana PNBP dan diajukan paling cepat bulan Januari."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Pola penetapan MP PNBP yang memungkinkan Kementerian/Lembaga mengajukan penetapan untuk seluruh satker sekaligus dan dapat mengubah alokasi antar satker disebut:",
+  opts:["Pola tidak terpusat","Pola terpusat","Pola progresif","Pola percepatan"], ans:1,
+  exp:"Pola terpusat diusulkan oleh Sekjen/Seskemen/Pimpinan Unit Eselon I dan disetujui Dirjen Perbendaharaan, memungkinkan pengajuan untuk seluruh satker sekaligus serta Perubahan Lampiran Alokasi MP PNBP antar satker."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"Secara default, satker PNBP mengajukan permohonan penetapan MP PNBP melalui pola tidak terpusat kepada:",
+  opts:["Direktur Jenderal Anggaran","Kepala Kantor Wilayah DJPb mitra kerjanya","Direktur Jenderal Perbendaharaan langsung","Menteri Keuangan"], ans:1,
+  exp:"Pada pola tidak terpusat (default), satker PNBP mengajukan permohonan penetapan MP PNBP kepada Kepala Kantor Wilayah DJPb mitra kerjanya."},
+
+{bab:"Bab 3 — Maksimum Pencairan PNBP", q:"MP PNBP Percepatan Tahap II dapat diajukan sebelum bulan Juli dengan syarat realisasi setoran PNBP telah mencapai paling kurang:",
+  opts:["40%","50%","60%","70%"], ans:2,
+  exp:"MP PNBP Percepatan Tahap II (maksimal 80%) dapat diajukan sebelum Juli dengan syarat realisasi setoran PNBP telah mencapai minimal 60%."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Hibah yang mekanismenya menggabungkan proses perencanaan (dialokasikan dalam RKA-K/L dan DIPA) namun pelaksanaannya menerapkan mekanisme hibah langsung disebut:",
+  opts:["Hibah terencana","Hibah langsung murni","Hibah hybrid","Hibah spontan"], ans:2,
+  exp:"Hibah hybrid melalui mekanisme perencanaan (dialokasikan dalam RKA-K/L dan DIPA) namun pelaksanaannya menerapkan mekanisme hibah langsung. Contohnya Hibah Millennium Challenge Corporation (MCC)."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Berdasarkan penarikannya, hibah diklasifikasikan menjadi:",
+  opts:["Hibah uang dan hibah barang/jasa","Hibah dalam negeri dan hibah luar negeri","Hibah melalui BUN dan hibah tidak melalui BUN","Hibah terencana dan hibah hybrid"], ans:2,
+  exp:"Menurut penarikannya, hibah diklasifikasikan menjadi hibah melalui Bendahara Umum Negara (BUN) dan hibah tidak melalui BUN."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Satker penerima hibah langsung uang wajib menggunakan rekening khusus yang disebut:",
+  opts:["Rekening Kas Umum Negara (RKUN)","Rekening Pemerintah Lainnya (RPL) Hibah","Rekening Penampungan Akhir Tahun Anggaran (RPATA)","Rekening Kas Umum Daerah (RKUD)"], ans:1,
+  exp:"Satker penerima hibah langsung uang wajib menggunakan Rekening Pemerintah Lainnya (RPL) Hibah, yang dapat berupa RPL penampungan dan/atau RPL penyaluran hibah."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Menurut PP Nomor 10 Tahun 2011, salah satu kriteria agar suatu penerimaan negara dapat dikategorikan sebagai hibah adalah:",
+  opts:["Harus dibayarkan kembali dalam jangka waktu tertentu","Boleh disertai ikatan politik tertentu","Tidak dimaksudkan untuk dibayarkan kembali kepada pemberi hibah","Wajib bersumber dari luar negeri"], ans:2,
+  exp:"Kriteria hibah antara lain: tidak dimaksudkan untuk dibayarkan kembali, tidak disertai ikatan politik/tidak mengganggu stabilitas keamanan negara, dan digunakan mendukung sasaran keluaran kegiatan satker atau penanggulangan keadaan darurat."},
+
+{bab:"Bab 4 — Pengelolaan Hibah", q:"Hibah yang bersumber dari dalam negeri diregistrasi di:",
+  opts:["DJPPR","Direktorat Jenderal Anggaran","Kantor Wilayah DJPb setempat","Kementerian Dalam Negeri"], ans:2,
+  exp:"Berdasarkan PMK 99/PMK.05/2017, hibah yang bersumber dari dalam negeri diregistrasi di Kantor Wilayah DJPb setempat, sedangkan hibah luar negeri diregistrasi di DJPPR."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DAU yang diberikan kepada daerah tanpa ditentukan penggunaannya secara spesifik oleh pemerintah pusat disebut:",
+  opts:["Specific grant","Block grant","Matching grant","Conditional grant"], ans:1,
+  exp:"DAU jenis block grant diberikan tanpa ditentukan penggunaannya, sehingga daerah memiliki keleluasaan penuh mengalokasikannya sesuai prioritas dan kebutuhan."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Dana Alokasi Umum (DAU) setiap daerah dihitung berdasarkan:",
+  opts:["Jumlah penduduk saja","Celah Fiskal (selisih kebutuhan fiskal dan potensi pendapatan daerah)","Luas wilayah saja","Realisasi belanja tahun sebelumnya"], ans:1,
+  exp:"DAU = Celah Fiskal (CF), yaitu selisih antara Kebutuhan Fiskal (KbF) daerah dan Potensi Pendapatan Daerah (Potensi PD)."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"DAU yang bersifat block grant disalurkan kepada daerah secara rutin setiap bulan dengan besaran:",
+  opts:["1/6 dari pagu alokasi tahunan","1/10 dari pagu alokasi tahunan","1/12 dari pagu alokasi tahunan","Sesuai realisasi belanja bulan berjalan"], ans:2,
+  exp:"DAU block grant disalurkan rutin tiap bulan sebesar 1/12 dari total pagu alokasi tahunan, menggunakan kode akun 621111."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Salah satu jenis DAU yang ditentukan penggunaannya (specific grant) adalah untuk penggajian:",
+  opts:["PNS Pusat","PPPK Daerah","Pegawai BUMN","Aparatur Desa"], ans:1,
+  exp:"DAU specific grant untuk penggajian PPPK Daerah digunakan membiayai gaji pokok dan tunjangan melekat PPPK Daerah yang diangkat pada tahun berjalan."},
+
+{bab:"Bab 5 — Transfer ke Daerah", q:"Indikasi Kebutuhan Dana BUN untuk DAU disampaikan oleh Direktur Jenderal Perimbangan Keuangan kepada Direktur Jenderal Anggaran paling lambat pada bulan:",
+  opts:["Januari","Februari","Juli","Agustus"], ans:1,
+  exp:"Setelah menyusun Indikasi Kebutuhan Dana BUN untuk DAU, dokumen tersebut disampaikan kepada Direktur Jenderal Anggaran paling lambat bulan Februari."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Indikator dalam IKPA yang termasuk dalam aspek 'Kualitas Perencanaan Pelaksanaan Anggaran' adalah:",
+  opts:["Penyerapan Anggaran dan Belanja Kontraktual","Revisi DIPA dan Deviasi Halaman III DIPA","Capaian Output","Dispensasi SPM"], ans:1,
+  exp:"Aspek Kualitas Perencanaan terdiri dari indikator Revisi DIPA dan Deviasi Halaman III DIPA, untuk mengukur kesesuaian pelaksanaan dengan yang direncanakan dalam DIPA."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Bobot penilaian untuk indikator Revisi DIPA dalam IKPA adalah:",
+  opts:["5%","10%","15%","20%"], ans:1,
+  exp:"Indikator Revisi DIPA memiliki bobot 10% dan digunakan mengukur kualitas perencanaan anggaran berdasarkan frekuensi revisi DIPA pagu tetap dalam satu semester."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Pada tingkat nasional, pelaksanaan Evaluasi Pelaksanaan Anggaran (EPA) oleh Direktorat Pelaksanaan Anggaran melibatkan K/L yang memiliki:",
+  opts:["Pagu anggaran terkecil","Pagu anggaran terbesar (15 K/L)","Jumlah satker terbanyak","Realisasi PNBP tertinggi"], ans:1,
+  exp:"Pelaksanaan EPA tingkat nasional melibatkan Kantor Pusat K/L beserta seluruh Unit Eselon I pada 15 K/L dengan pagu anggaran terbesar, dinilai representatif terhadap tantangan sebagian besar K/L."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Reviu Pelaksanaan Anggaran (RPA) disusun terutama untuk kepentingan:",
+  opts:["Promosi jabatan pegawai","Manajerial, sebagai masukan pengambilan kebijakan pelaksanaan APBN","Pemasaran produk keuangan","Audit eksternal semata"], ans:1,
+  exp:"RPA disusun untuk kepentingan manajerial, yaitu sebagai masukan pengambilan kebijakan anggaran bagi Kementerian Keuangan, K/L, Pemerintah Daerah, masyarakat, dan swasta."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Spending Review menekankan pada konsep value for money yang terdiri dari tiga aspek, yaitu:",
+  opts:["Legalitas, transparansi, akuntabilitas","Ekonomi, efisiensi, efektivitas","Kepatuhan, ketepatan waktu, kelengkapan","Perencanaan, pelaksanaan, pelaporan"], ans:1,
+  exp:"Value for money dalam Spending Review mencakup aspek ekonomi (harga tepat), efisiensi (optimalisasi input-output), dan efektivitas (pencapaian outcome sesuai target)."},
+
+{bab:"Bab 6 — Monitoring dan Evaluasi", q:"Spending Review yang dilakukan pada awal tahun anggaran berjalan untuk mengidentifikasi potensi ruang fiskal tahun anggaran berikutnya termasuk dalam kategori:",
+  opts:["Spending Review Tematik","Spending Review Umum","Spending Review Wilayah khusus","Spending Review Akhir Tahun"], ans:1,
+  exp:"Spending Review Umum dilakukan pada awal tahun anggaran berjalan atas belanja pemerintah untuk mengidentifikasi potensi ruang fiskal tahun anggaran berikutnya, salah satunya melalui Spending Review Wilayah."}
+];
+
+let session = [];
+let idx = 0;
+let score = 0;
+let answered = false;
+let babStats = {};
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function renderSetup(){
+  const sheet = document.getElementById('sheet');
+  sheet.innerHTML = `
+    <div class="field-label">Jumlah soal</div>
+    <div class="choice-row" id="countRow">
+      <div class="chip" data-v="10">10 soal</div>
+      <div class="chip active" data-v="20">20 soal</div>
+      <div class="chip" data-v="${BANK.length}">Semua (${BANK.length} soal)</div>
+    </div>
+    <div class="field-label">Cakupan bab</div>
+    <div class="choice-row" id="scopeRow">
+      <div class="chip active" data-v="all">Acak semua bab</div>
+      <div class="chip" data-v="1">Bab 1</div>
+      <div class="chip" data-v="2">Bab 2</div>
+      <div class="chip" data-v="3">Bab 3</div>
+      <div class="chip" data-v="4">Bab 4</div>
+      <div class="chip" data-v="5">Bab 5</div>
+      <div class="chip" data-v="6">Bab 6</div>
+    </div>
+    <button class="start-btn" id="startBtn">Mulai Latihan</button>
+  `;
+  let count = 20, scope = 'all';
+  document.querySelectorAll('#countRow .chip').forEach(c=>{
+    c.onclick = ()=>{
+      document.querySelectorAll('#countRow .chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      count = parseInt(c.dataset.v);
+    };
+  });
+  document.querySelectorAll('#scopeRow .chip').forEach(c=>{
+    c.onclick = ()=>{
+      document.querySelectorAll('#scopeRow .chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      scope = c.dataset.v;
+    };
+  });
+  document.getElementById('startBtn').onclick = ()=>{
+    let pool = BANK;
+    if(scope !== 'all'){
+      pool = BANK.filter(q => q.bab.startsWith('Bab ' + scope + ' '));
+    }
+    const shuffled = shuffle(pool);
+    session = shuffled.slice(0, Math.min(count, shuffled.length)).map(q=>{
+      const optOrder = shuffle(q.opts.map((o,i)=>({text:o, orig:i})));
+      return {...q, optOrder, correctPos: optOrder.findIndex(o=>o.orig===q.ans)};
+    });
+    idx = 0; score = 0; answered = false; babStats = {};
+    renderQuestion();
+  };
+}
+
+function renderQuestion(){
+  const sheet = document.getElementById('sheet');
+  const q = session[idx];
+  answered = false;
+  const pct = Math.round((idx/session.length)*100);
+  sheet.innerHTML = `
+    <div class="quiz-top">
+      <div class="bab-tag">${q.bab}</div>
+      <div class="counter">Soal ${idx+1} / ${session.length}</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-text">${q.q}</div>
+    <div id="optionsWrap"></div>
+    <div class="explain" id="explainBox"></div>
+    <button class="next-btn" id="nextBtn">${idx===session.length-1 ? 'Lihat Hasil Akhir' : 'Soal Berikutnya'}</button>
+  `;
+  const wrap = document.getElementById('optionsWrap');
+  const letters = ['A','B','C','D'];
+  q.optOrder.forEach((opt, i)=>{
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<span class="letter">${letters[i]}</span><span>${opt.text}</span>`;
+    div.onclick = ()=> selectOption(i);
+    wrap.appendChild(div);
+  });
+  document.getElementById('nextBtn').onclick = ()=>{
+    idx++;
+    if(idx >= session.length){ renderResults(); } else { renderQuestion(); }
+  };
+}
+
+function selectOption(i){
+  if(answered) return;
+  answered = true;
+  const q = session[idx];
+  if(!babStats[q.bab]) babStats[q.bab] = {correct:0, total:0};
+  babStats[q.bab].total++;
+
+  const opts = document.querySelectorAll('.option');
+  const isCorrect = i === q.correctPos;
+  if(isCorrect){ score++; babStats[q.bab].correct++; }
+
+  opts.forEach((el, j)=>{
+    if(j === q.correctPos) el.classList.add('correct');
+    else if(j === i) el.classList.add('wrong');
+    else el.classList.add('dim');
+  });
+
+  const box = document.getElementById('explainBox');
+  box.innerHTML = `<span class="stamp ${isCorrect?'good':'bad'}">${isCorrect?'Benar':'Kurang Tepat'}</span><div>${q.exp}</div>`;
+  box.classList.add('show');
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function renderResults(){
+  const sheet = document.getElementById('sheet');
+  const pctScore = Math.round((score/session.length)*100);
+  let babRows = '';
+  Object.keys(babStats).forEach(bab=>{
+    const s = babStats[bab];
+    const p = Math.round((s.correct/s.total)*100);
+    babRows += `
+      <div class="bab-row">
+        <span>${bab.replace(/^Bab \d+ — /,'')}</span>
+        <div class="bab-bar-track"><div class="bab-bar-fill" style="width:${p}%"></div></div>
+        <span class="bab-score">${s.correct}/${s.total}</span>
+      </div>`;
+  });
+  sheet.innerHTML = `
+    <div class="field-label" style="text-align:center;margin-top:0;">Hasil Latihan</div>
+    <div class="result-score">${score}<span style="font-size:24px;color:rgba(18,44,49,0.4);"> / ${session.length}</span></div>
+    <div class="result-sub">${pctScore}% jawaban benar</div>
+    ${babRows}
+    <button class="retry-btn" id="retryBtn">Latihan Lagi</button>
+  `;
+  document.getElementById('retryBtn').onclick = renderSetup;
+}
+
+renderSetup();
+</script>
+</body>
+</html>
